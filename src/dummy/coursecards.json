@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "imageurl": "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+    "title": "The Complete Web Development Bootcamp",
+    "instructorName": "Dr. Angela Yu",
+    "rating": "5.0",
+    "votes": "123,456",
+    "price": 499,
+    "oldPrice": 899,
+    "category": "Web Development",
+    "tag": "Bestseller",
+    "level": "Beginner"
+  },
+  {
+    "id": 2,
+    "imageurl": "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+    "title": "The Complete Web Development Bootcamp",
+    "instructorName": "Dr. Angela Yu",
+    "rating": "5.0",
+    "votes": "123,456",
+    "price": 499,
+    "oldPrice": 899,
+    "category": "Web Development",
+    "tag": "Bestseller",
+    "level": "Beginner"
+  },
+  {
+    "id": 3,
+    "imageurl": "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+    "title": "The Complete Web Development Bootcamp",
+    "instructorName": "Dr. Angela Yu",
+    "rating": "5.0",
+    "votes": "123,456",
+    "price": 499,
+    "oldPrice": 899,
+    "category": "Web Development",
+    "tag": "Bestseller",
+    "level": "Beginner"
+  },
+  {
+    "id": 4,
+    "imageurl": "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+    "title": "The Complete Web Development Bootcamp",
+    "instructorName": "Dr. Angela Yu",
+    "rating": "5.0",
+    "votes": "123,456",
+    "price": 499,
+    "oldPrice": 899,
+    "category": "Web Development",
+    "tag": "Bestseller",
+    "level": "Beginner"
+  },
+  {
+    "id": 5,
+    "imageurl": 
+        "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+      "title": "The Complete Web Development Bootcamp",
+      "instructorName": "Dr. Angela Yu",
+      "rating" : "5.0",
+      "votes": "123,456",
+      "price": 499,
+      "oldPrice": 899,
+      "category": "Web Development",
+      "tag": "Bestseller",
+      "level": "Beginner"
+},
+{
+    "id": 6,
+    "imageurl": 
+        "https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg",
+      "title": "The Complete Web Development Bootcamp",
+      "instructorName": "Dr. Angela Yu",
+      "rating" : "5.0",
+      "votes": "123,456",
+      "price": 499,
+      "oldPrice": 899,
+      "category": "Web Development",
+      "tag": "Bestseller",
+      "level": "Beginner"
+}
+]
