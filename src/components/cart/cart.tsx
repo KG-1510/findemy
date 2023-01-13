@@ -3,6 +3,7 @@ import { CartcardComponent } from ".";
 
 // TODO: To replace with API call of searched items
 import coursecards from "../../dummy/coursecards.json";
+import { Link } from "react-router-dom";
 
 const Cartpage = (): JSX.Element => {
   return (
@@ -43,9 +44,11 @@ const Cartpage = (): JSX.Element => {
             </p>
             {/* TODO: Percentage discount checking utility */}
             <p className="text-gray-500 font-normal text-sm">87% off</p>
-            <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
-              Checkout
-            </button>
+            <Link to={"/checkout"}>
+              <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
+                Checkout
+              </button>
+            </Link>
           </div>
         </div>
       </div>

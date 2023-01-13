@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartpageComponent } from "./components/cart";
+import { CheckoutpageComponent } from "./components/checkout";
+import { CoursedetailsComponent } from "./components/coursedetails";
 import { HomepageComponent } from "./components/homepage";
 import { LoginpageComponent } from "./components/login";
 import { SearchpageComponent } from "./components/search";
@@ -14,6 +16,11 @@ function App() {
         <Route path="/signup" element={<SignuppageComponent />}></Route>
         <Route path="/search" element={<SearchpageComponent />}></Route>
         <Route path="/cart" element={<CartpageComponent />}></Route>
+        <Route
+          path="/coursedetails/:courseId"
+          element={<CoursedetailsComponent />}
+        ></Route>
+        <Route path="/checkout" element={<CheckoutpageComponent />}></Route>
         {/* <Route path="/register" element={<RegisterComponent />}></Route> */}
         {/* <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardComponent />}></Route>
