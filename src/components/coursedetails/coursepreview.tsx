@@ -9,16 +9,17 @@ interface CoursepreviewProps {
   //   link: activeLinkProps;
   //   onDeleteCard: (_id: string, closeModal: () => void) => void;
   price: number;
+  imageurl: string;
 }
 
-const Coursepreview = ({ price }: CoursepreviewProps): JSX.Element => {
+const Coursepreview = ({
+  price,
+  imageurl,
+}: CoursepreviewProps): JSX.Element => {
   return (
     <>
-      <div className="block lg:absolute top-28 right-10 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-4/12 h-auto lg:h-72 border border-none lg:border-white lg:drop-shadow-md">
-        <img
-          alt="img"
-          src="https://miro.medium.com/max/750/0*QmxDMtQShSHGzC6v.jpg"
-        ></img>
+      <div className="block lg:absolute top-28 right-10 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-4/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md">
+        <img alt="img" src={imageurl}></img>
         <div className="p-6 bg-primaryblack lg:bg-white">
           <h1 className="text-4xl font-bold mt-2 mb-4">₹{price}</h1>
           <div className="w-full flex flex-row space-x-2">
@@ -62,9 +63,15 @@ const Coursepreview = ({ price }: CoursepreviewProps): JSX.Element => {
             </div>
           </div>
           <div className="flex flex-row w-full justify-around">
-            <p className="underline hover:text-findemypurple cursor-pointer">Share</p>
-            <p className="underline hover:text-findemypurple cursor-pointer">Gift this course</p>
-            <p className="underline hover:text-findemypurple cursor-pointer">Apply coupon</p>
+            <p className="underline hover:text-findemypurple cursor-pointer">
+              Share
+            </p>
+            <p className="underline hover:text-findemypurple cursor-pointer">
+              Gift this course
+            </p>
+            <p className="underline hover:text-findemypurple cursor-pointer">
+              Apply coupon
+            </p>
           </div>
         </div>
       </div>

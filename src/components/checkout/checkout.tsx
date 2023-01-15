@@ -36,7 +36,7 @@ const Checkoutpage = (): JSX.Element => {
                   placeholder="Country"
                   value={"India"}
                   disabled={true}
-                  className="w-full px-4 py-2 opacity-80 cursor-not-allowed border border-black"
+                  className="w-full px-4 py-2 opacity-60 cursor-not-allowed border border-black"
                 />
               </div>
               <div className="w-full lg:w-1/2">
@@ -54,6 +54,7 @@ const Checkoutpage = (): JSX.Element => {
                   className="w-full px-4 py-2 border border-black focus:outline-none"
                   name="state"
                 >
+                  <option selected={true}>Please select...</option>
                   <option value={"Maharashtra"}>Maharashtra</option>
                   <option value={"Karnataka"}>Karnataka</option>
                   <option value={"Andaman and Nicobar"}>

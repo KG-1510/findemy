@@ -6,10 +6,12 @@ import { VscGlobe } from "react-icons/vsc";
 import { AiFillStar, AiFillPlayCircle } from "react-icons/ai";
 import { HiCheckBadge, HiUsers } from "react-icons/hi2";
 
-// TODO: To replace with API call of searched items
-import coursedetails from "../../dummy/coursedetails.json";
 import { NavbarComponent, FooterComponent } from "../shared";
 import { CoursepreviewComponent } from ".";
+import { useEffect, useState } from "react";
+import { getCourseDetails } from "../../utils/api";
+import MarkdownView from "react-showdown";
+import { sanitizedHtmlText, truncateText } from "../../utils/functions";
 
 interface CoursedetailsProps {
   //   onCardClick: () => void;
@@ -18,6 +20,7 @@ interface CoursedetailsProps {
   id: number;
   imageurl: string;
   title: string;
+  courseSlug: string;
   instructorName: string;
   rating: string;
   votes: string;
@@ -37,50 +40,88 @@ interface CoursedetailsProps {
 const Coursedetailspage = (): JSX.Element => {
   const params = useParams();
 
-  // TODO: Replace dummy data with API call
-  const coursedata: CoursedetailsProps = coursedetails.find(
-    (item) => item.id === parseInt(params.courseId)
-  );
+  const [courseDetailsData, setCourseDetailsData] =
+    useState<CoursedetailsProps>();
+
+  useEffect(() => {
+    fetchCourseDetails();
+  }, []);
+
+  const fetchCourseDetails = async () => {
+    const _res = await getCourseDetails(params.courseSlug);
+    if (_res) {
+      setCourseDetailsData(_res.data);
+    }
+  };
+
+  let sanitizedInstructorDescription;
+  let sanitizedCourseDescription;
+
+  if (courseDetailsData) {
+    sanitizedInstructorDescription = sanitizedHtmlText(
+      courseDetailsData?.instructorDescription
+    );
+    sanitizedCourseDescription = sanitizedHtmlText(
+      courseDetailsData?.description
+    );
+  }
+
   return (
     <>
       <NavbarComponent />
       <div className="w-full">
-        <CoursepreviewComponent price={coursedata.price} />
+        <CoursepreviewComponent
+          price={courseDetailsData?.price}
+          imageurl={courseDetailsData?.imageurl}
+        />
         <div className="bg-primaryblack w-full text-white">
           <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
-            <h1 className="font-bold text-3xl">{coursedata.title}</h1>
-            <p className="font-light text-lg my-2">
-              The course you were always looking for!
-            </p>
+            <h1 className="font-bold text-3xl">{courseDetailsData?.title}</h1>
+            {sanitizedCourseDescription && (
+              <MarkdownView
+                className="text-sm font-normal"
+                style={{ whiteSpace: "pre-line" }}
+                markdown={truncateText(sanitizedCourseDescription, 100, 100)}
+              />
+            )}
 
             <div className="flex flex-row space-x-1 justify-start mt-3">
-              <div className="my-1 w-16">
-                {coursedata.tag === "Bestseller" && (
+              <div className="my-1">
+                {courseDetailsData?.tag === "Bestseller" && (
                   <div>
                     <p className="bg-[#ECEB98] text-primaryblack font-bold text-xs py-0.5 px-1">
                       Bestseller
                     </p>
                   </div>
                 )}
+                {courseDetailsData?.tag === "Coding Exercises" && (
+                  <div>
+                    <p className="bg-[#CEBFFC] w-full text-primaryblack font-bold text-xs py-0.5 px-1">
+                      Coding Exercises
+                    </p>
+                  </div>
+                )}
               </div>
               <h3 className="text-orange-400 font-bold pt-1 text-sm flex items-center justify-center">
-                {coursedata.rating}
+                {courseDetailsData?.rating}
               </h3>
               <div>
-                <StarRatings
-                  rating={parseFloat(coursedata.rating)}
-                  starRatedColor="orange"
-                  numberOfStars={5}
-                  starDimension="15px"
-                  starSpacing="0px"
-                  name="courserating"
-                />
+                {courseDetailsData?.rating && (
+                  <StarRatings
+                    rating={parseFloat(courseDetailsData?.rating)}
+                    starRatedColor="orange"
+                    numberOfStars={5}
+                    starDimension="15px"
+                    starSpacing="0px"
+                    name="courserating"
+                  />
+                )}
               </div>
               <h3 className="text-xs text-purple-300 underline font-light pt-1 flex items-center justify-center">
                 1,855 ratings
               </h3>
               <h3 className="text-xs text-white font-light pt-1 flex items-center justify-center">
-                ({coursedata.votes})
+                ({courseDetailsData?.votes})
               </h3>
             </div>
 
@@ -88,7 +129,7 @@ const Coursedetailspage = (): JSX.Element => {
               <p>
                 Created by{" "}
                 <span className="text-purple-300 underline">
-                  {coursedata.instructorName}
+                  {courseDetailsData?.instructorName}
                 </span>
               </p>
             </div>
@@ -112,7 +153,7 @@ const Coursedetailspage = (): JSX.Element => {
               <h1 className="font-bold text-2xl mb-4">What you'll learn</h1>
             </div>
             <ul className="grid grid-cols-2 gap-3">
-              {coursedata.learningOutcomes.map((item, i) => {
+              {courseDetailsData?.learningOutcomes.map((item, i) => {
                 return (
                   <li className="text-gray-500 font-light text-base" key={i}>
                     ✓ {item}
@@ -127,7 +168,7 @@ const Coursedetailspage = (): JSX.Element => {
               <h1 className="font-bold text-2xl mb-4">Requirements</h1>
             </div>
             <ul>
-              {coursedata.requirements.map((item, i) => {
+              {courseDetailsData?.requirements?.map((item, i) => {
                 return (
                   <li
                     className="text-primaryblack font-light text-base my-2"
@@ -144,7 +185,13 @@ const Coursedetailspage = (): JSX.Element => {
             <div>
               <h1 className="font-bold text-2xl mb-4">Description</h1>
             </div>
-            <p className="text-sm font-light">{coursedata.description}</p>
+            <p className="text-sm font-light">
+              <MarkdownView
+                className="text-sm font-normal"
+                style={{ whiteSpace: "pre-line" }}
+                markdown={sanitizedCourseDescription}
+              />
+            </p>
           </div>
 
           <div className="mt-8">
@@ -152,16 +199,16 @@ const Coursedetailspage = (): JSX.Element => {
               <h1 className="font-bold text-2xl mb-4">Instructor</h1>
             </div>
             <p className="text-lg font-bold text-findemypurple underline">
-              {coursedata.instructorName}
+              {courseDetailsData?.instructorName}
             </p>
             <p className="text-base font-light text-gray-500">
-              {coursedata.instructorProfession}
+              {courseDetailsData?.instructorProfession}
             </p>
             <div className="flex flex-row my-3">
               <img
                 className="w-32 h-32 rounded-full"
-                src={coursedata.instructorImg}
-                alt={coursedata.instructorName}
+                src={courseDetailsData?.instructorImg}
+                alt={courseDetailsData?.instructorName}
               />
               <div className="flex flex-col mb-5 mx-4">
                 <div className="flex flex-row space-x-3 my-1">
@@ -182,7 +229,11 @@ const Coursedetailspage = (): JSX.Element => {
                 </div>
               </div>
             </div>
-              <p className="font-light text-sm">{coursedata.instructorDescription}</p>
+            <MarkdownView
+              className="text-sm font-normal"
+              style={{ whiteSpace: "pre-line" }}
+              markdown={sanitizedInstructorDescription}
+            />
           </div>
         </div>
       </div>

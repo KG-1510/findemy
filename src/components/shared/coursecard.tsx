@@ -5,7 +5,8 @@ interface CoursecardProps {
   //   onCardClick: () => void;
   //   link: activeLinkProps;
   //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  id: number;
+  id: string;
+  courseSlug: string;
   imageurl: string;
   title: string;
   instructorName: string;
@@ -20,6 +21,7 @@ interface CoursecardProps {
 
 const Coursecard = ({
   id,
+  courseSlug,
   imageurl,
   title,
   instructorName,
@@ -33,13 +35,16 @@ const Coursecard = ({
 }: CoursecardProps): JSX.Element => {
   return (
     <>
-      <Link to={`/coursedetails/${id}`} >
+      <Link to={`/coursedetails/${courseSlug}`}>
         <div
           key={id}
           className="flex flex-col w-full items-start space-y-[1px] hover:cursor-pointer"
         >
           <img src={imageurl} alt={title} className="h-full w-full" />
-          <h2 className="font-bold text-lg leading-5 pt-1">{title}</h2>
+          <h2 className="card-title font-bold text-lg leading-5 pt-1 overflow-hidden">
+            {title}
+          </h2>
+          
           <h2 className="text-xs text-gray-700 font-light">{instructorName}</h2>
           <div className="flex flex-row space-x-1">
             <h3 className="text-orange-800 pt-1 font-bold text-sm flex items-center justify-center">
@@ -70,6 +75,13 @@ const Coursecard = ({
               <div>
                 <p className="bg-[#ECEB98] font-bold text-xs py-0.5 px-1">
                   Bestseller
+                </p>
+              </div>
+            )}
+            {tag === "Coding Exercises" && (
+              <div>
+                <p className="bg-[#CEBFFC] font-bold text-xs py-0.5 px-1">
+                  Coding Exercises
                 </p>
               </div>
             )}

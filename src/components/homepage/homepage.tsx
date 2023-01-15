@@ -8,15 +8,30 @@ import {
   PrevArrow,
   FooterComponent,
 } from "../shared";
-import { CategorytopicsComponent } from ".";
+import { CategorytopicsComponent, Coursecardloader } from ".";
 
-// TODO: To replace with API call
-import coursecards from "../../dummy/coursecards.json";
+import { useEffect, useState } from "react";
+import { getCourses } from "../../utils/api";
 
 const Homepage = (): JSX.Element => {
+  const [courseCardsData, setCourseCardsData] = useState<any>();
+  const [courseDataLoaded, setCourseDataLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    const _res = await getCourses();
+    if (_res) {
+      setCourseCardsData(_res.data);
+      setCourseDataLoaded(true);
+    }
+  };
+
   var settings = {
     dots: false,
-    infinite: true,
+    infinite: false,
     slidesToScroll: 1,
     slidesToShow: 4,
     arrows: true,
@@ -29,8 +44,8 @@ const Homepage = (): JSX.Element => {
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
-          infinite: true,
-          dots: true,
+          infinite: false,
+          dots: false,
         },
       },
       {
@@ -38,7 +53,8 @@ const Homepage = (): JSX.Element => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
-          initialSlide: 2,
+          infinite: false,
+          dots: false,
         },
       },
       {
@@ -46,6 +62,9 @@ const Homepage = (): JSX.Element => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          initialSlide: 2,
+          infinite: true,
+          dots: false,
         },
       },
     ],
@@ -56,27 +75,42 @@ const Homepage = (): JSX.Element => {
       <NavbarComponent />
       <div className="py-10 px-4 lg:px-44 font-bold text-2xl">
         <h1 className="mb-4">Students are viewing</h1>
-        <Slider {...settings}>
-          {coursecards.map((data) => {
-            return (
-              <div key={data.id} className="px-2">
-                <CoursecardComponent
-                  id={data.id}
-                  imageurl={data.imageurl}
-                  title={data.title}
-                  instructorName={data.instructorName}
-                  rating={data.rating}
-                  votes={data.votes}
-                  price={data.price}
-                  oldPrice={data.oldPrice}
-                  category={data.category}
-                  tag={data.tag}
-                  level={data.level}
-                />
-              </div>
-            );
-          })}
-        </Slider>
+        {courseDataLoaded ? (
+          <Slider {...settings}>
+            {courseCardsData?.map((data) => {
+              return (
+                <div key={data._id} className="px-2">
+                  <CoursecardComponent
+                    id={data._id}
+                    imageurl={data.imageurl}
+                    title={data.title}
+                    courseSlug={data.courseSlug}
+                    instructorName={data.instructorName}
+                    rating={data.rating}
+                    votes={data.votes}
+                    price={data.price}
+                    oldPrice={data.oldPrice}
+                    category={data.category}
+                    tag={data.tag}
+                    level={data.level}
+                  />
+                </div>
+              );
+            })}
+          </Slider>
+        ) : (
+          <>
+            <div className="hidden lg:flex flex-row space-x-3">
+              <Coursecardloader />
+              <Coursecardloader />
+              <Coursecardloader />
+              <Coursecardloader />
+            </div>
+            <div className="block lg:hidden">
+              <Coursecardloader />
+            </div>
+          </>
+        )}
       </div>
       <CategorytopicsComponent />
       <FooterComponent />
