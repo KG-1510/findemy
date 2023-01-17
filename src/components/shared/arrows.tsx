@@ -4,7 +4,7 @@ const NextArrow = (props): JSX.Element => {
   return (
     <div
       onClick={onClick}
-      className="rounded-full bg-primaryblack text-white border border-gray-500 absolute z-50 top-12 lg:top-28 -right-4 lg:-right-5 w-8 lg:w-10 h-8 lg:h-10 flex items-center justify-center cursor-pointer"
+      className="rounded-full bg-primaryblack text-white border border-gray-500 absolute z-40 top-12 lg:top-28 -right-4 lg:-right-5 w-8 lg:w-10 h-8 lg:h-10 flex items-center justify-center cursor-pointer"
     >
       <FiChevronRight size={36} className="mx-auto" />
     </div>
@@ -16,7 +16,7 @@ const PrevArrow = (props): JSX.Element => {
   return (
     <div
       onClick={onClick}
-      className="rounded-full bg-primaryblack text-white border border-gray-500 absolute z-50 top-12 lg:top-28 -left-4 lg:-left-5 w-8 lg:w-10 h-8 lg:h-10 flex items-center justify-center cursor-pointer"
+      className="rounded-full bg-primaryblack text-white border border-gray-500 absolute z-40 top-12 lg:top-28 -left-4 lg:-left-5 w-8 lg:w-10 h-8 lg:h-10 flex items-center justify-center cursor-pointer"
     >
       <FiChevronLeft size={36} className="mx-auto" />
     </div>

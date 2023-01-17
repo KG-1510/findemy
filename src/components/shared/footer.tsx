@@ -7,7 +7,9 @@ const Footer = (): JSX.Element => {
             <nav className="list-none mb-10">
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://business.udemy.com/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Udemy Business
@@ -15,7 +17,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/teaching/?ref=teach_footer"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Teach on Udemy
@@ -23,7 +27,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/mobile"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Get the app
@@ -31,7 +37,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://about.udemy.com/company/?locale=en-us#offices"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   About Us
@@ -39,7 +47,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://about.udemy.com/company/?locale=en-us#offices"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Contact Us
@@ -52,7 +62,9 @@ const Footer = (): JSX.Element => {
             <nav className="list-none mb-10">
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://about.udemy.com/careers/?locale=en-us"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Careers
@@ -60,7 +72,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://blog.udemy.com/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Blog
@@ -68,7 +82,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://support.udemy.com/hc/en-us"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Help and Support
@@ -76,7 +92,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/affiliate/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Affiliate
@@ -84,7 +102,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://investors.udemy.com/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Investors
@@ -96,7 +116,9 @@ const Footer = (): JSX.Element => {
             <nav className="list-none mb-10">
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/terms/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Terms
@@ -104,7 +126,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/terms/privacy/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Privacy Policy
@@ -112,7 +136,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/teaching/?ref=teach_footer"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Cookie Settings
@@ -120,7 +146,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://www.udemy.com/sitemap/"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Sitemap
@@ -128,7 +156,9 @@ const Footer = (): JSX.Element => {
               </li>
               <li className="my-2">
                 <a
-                  href="/"
+                  href="https://about.udemy.com/accessibility-statement/?locale=en-us"
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
                   Accessibility statement

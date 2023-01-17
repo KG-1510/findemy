@@ -11,3 +11,10 @@ export const truncateText = (
 export const sanitizedHtmlText = (text: string) => {
   return text.replace(/\\n/g, "<br />");
 };
+
+export const getDiscountPercent = (
+  cartOldPrice: number,
+  cartNewPrice: number
+) => {
+  return Math.round(((cartOldPrice - cartNewPrice) / cartOldPrice) * 100);
+};

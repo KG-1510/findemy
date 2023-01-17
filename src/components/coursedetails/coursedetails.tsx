@@ -73,6 +73,7 @@ const Coursedetailspage = (): JSX.Element => {
         <CoursepreviewComponent
           price={courseDetailsData?.price}
           imageurl={courseDetailsData?.imageurl}
+          courseSlug={courseDetailsData?.courseSlug}
         />
         <div className="bg-primaryblack w-full text-white">
           <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
@@ -102,7 +103,7 @@ const Coursedetailspage = (): JSX.Element => {
                   </div>
                 )}
               </div>
-              <h3 className="text-orange-400 font-bold pt-1 text-sm flex items-center justify-center">
+              <h3 className="text-orange-400 font-bold pt-0.5 text-sm flex items-center justify-center">
                 {courseDetailsData?.rating}
               </h3>
               <div>
@@ -117,10 +118,10 @@ const Coursedetailspage = (): JSX.Element => {
                   />
                 )}
               </div>
-              <h3 className="text-xs text-purple-300 underline font-light pt-1 flex items-center justify-center">
+              <h3 className="text-xs text-purple-300 underline font-light pt-0.5 flex items-center justify-center">
                 1,855 ratings
               </h3>
-              <h3 className="text-xs text-white font-light pt-1 flex items-center justify-center">
+              <h3 className="text-xs text-white font-light pt-0.5 flex items-center justify-center">
                 ({courseDetailsData?.votes})
               </h3>
             </div>

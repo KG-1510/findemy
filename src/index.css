@@ -17,6 +17,7 @@ body {
   font-weight: 600;
   background-color: #ffffff;
   color: #1c1d1f;
+  scroll-behavior: smooth;
 }
 
 /* Checkbox Custom CSS */
@@ -87,4 +88,29 @@ input[type="checkbox"]:before {
   100% {
     left: 150%;
   }
+}
+
+/* Truncate course card title to 2 lines */
+.navbar-drawer-email {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make video player responsive */
+.video-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.video-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }

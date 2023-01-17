@@ -1,13 +1,161 @@
 import { FooterComponent, NavbarComponent } from "../shared";
 import { AiFillLock } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import {
+  errorHandler,
+  getUserCart,
+  postCourseEnroll,
+  postRazorpayOrderId,
+  successHandler,
+} from "../../utils/api";
+import axios from "axios";
+import { baseUrl } from "../../utils/constants";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 
 const Checkoutpage = (): JSX.Element => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState<string>("");
+  const [cookie, _] = useCookies(["authToken"]);
+  const [cartCardsData, setCartCardsData] = useState<any>([]);
+  const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
+  const [cartOldPrice, setCartOldPrice] = useState<number>(0);
+  const [cartNewPrice, setCartNewPrice] = useState<number>(0);
+  const [userEmail, setUserEmail] = useState<string>();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (cookie?.authToken) {
+      const _data = JSON.parse(localStorage.getItem("userData"));
+      fetchCartItems(cookie?.authToken, _data?._id);
+      setUserEmail(_data?.email);
+    }
+  }, []);
+
+  const fetchCartItems = async (authToken: string, userId: string) => {
+    const _res = await getUserCart(authToken, userId);
+    if (_res) {
+      setCartCardsData(_res?.data?.cart);
+      setCartOldPrice(_res?.data?.oldPriceTotal);
+      setCartNewPrice(_res?.data?.newPriceTotal);
+      setCartDataLoaded(true);
+    }
+  };
+
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
   const handlePaymentMode = (e: any) => {
-    console.log(e.target.value);
     setSelectedPaymentMode(e.target.value);
   };
+
+  const handleCheckout = async () => {
+    try {
+      if (cookie?.authToken && selectedPaymentMode) {
+        let paymentMethod;
+        paymentMethod =
+          selectedPaymentMode === "paytm" || selectedPaymentMode === "wallet"
+            ? "upi"
+            : selectedPaymentMode;
+
+        const _res = await postRazorpayOrderId(
+          cookie?.authToken,
+          cartNewPrice,
+          paymentMethod
+        );
+        if (_res) {
+          initPayment(_res?.data);
+        }
+      } else {
+        toast.error("Please select a payment method before proceeding!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          className: "font-DMSans",
+        });
+      }
+    } catch (err) {
+      errorHandler("Something went wrong, please try again later!");
+    }
+  };
+
+  const initPayment = async (data) => {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Error loading Razorpay SDK! Please try again later!");
+      return;
+    }
+    const KEY_ID = process.env.REACT_APP_RAZORPAY_KEY_ID;
+    const options = {
+      key: KEY_ID,
+      amount: cartNewPrice,
+      currency: "INR",
+      name: "Findemy",
+      description: "Purchase courses transaction",
+      prefill: {
+        email: userEmail,
+      },
+      image:
+        "https://user-images.githubusercontent.com/60519359/212956791-233d6fe1-933e-4b6e-ba1c-318a9a6853a6.png",
+      order_id: data.id,
+      handler: async (response) => {
+        try {
+          const verifyUrl = `${baseUrl}/payment/verify`;
+          const _res = await axios({
+            method: "POST",
+            url: verifyUrl,
+            headers: {
+              Authorization: `Bearer ${cookie?.authToken}`,
+            },
+            data: response,
+          });
+          if (_res) {
+            const _data = JSON.parse(localStorage.getItem("userData"));
+            console.log("carttt", cartCardsData);
+            const res = await postCourseEnroll(
+              cookie?.authToken,
+              _data?._id,
+              cartCardsData
+            );
+            if (res) {
+              console.log(res);
+              successHandler(_res?.data?.message);
+              navigate("/checkoutsuccess");
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      theme: {
+        color: "#A435EF",
+      },
+    };
+
+    const rzpObject = (window as any).Razorpay(options);
+    rzpObject.open();
+  };
+
   return (
     <>
       <NavbarComponent />
@@ -228,7 +376,10 @@ const Checkoutpage = (): JSX.Element => {
                           className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
                         />
                         <div className="flex w-full justify-end">
-                          <button className="p-3 bg-findemypurple hover:opacity-90 w-8/12 mx-auto my-3 text-white font-semibold text-sm">
+                          <button
+                            onClick={() => handleCheckout()}
+                            className="p-3 bg-findemypurple hover:opacity-90 w-8/12 mx-auto my-3 text-white font-semibold text-sm"
+                          >
                             Make Payment
                           </button>
                         </div>
@@ -276,7 +427,7 @@ const Checkoutpage = (): JSX.Element => {
                       className="absolute top-6 left-1"
                       id="tab-single-four"
                       type="radio"
-                      value={"netBanking"}
+                      value={"netbanking"}
                       name="payment-mode"
                     />
                     <label
@@ -295,7 +446,7 @@ const Checkoutpage = (): JSX.Element => {
                       </span>
                     </label>
                   </div>
-                  {selectedPaymentMode === "netBanking" && (
+                  {selectedPaymentMode === "netbanking" && (
                     <div className="overflow-hidden bg-white leading-normal">
                       <p className="font-normal text-base p-4">
                         Your payment will be fulfilled by Razorpay Payment
@@ -310,7 +461,7 @@ const Checkoutpage = (): JSX.Element => {
                       className="absolute top-6 left-1"
                       id="tab-single-five"
                       type="radio"
-                      value={"mobileWallets"}
+                      value={"wallet"}
                       name="payment-mode"
                     />
                     <label
@@ -329,7 +480,7 @@ const Checkoutpage = (): JSX.Element => {
                       </span>
                     </label>
                   </div>
-                  {selectedPaymentMode === "mobileWallets" && (
+                  {selectedPaymentMode === "wallet" && (
                     <div className="overflow-hidden bg-white leading-normal">
                       <p className="font-normal text-base p-4">
                         Your payment will be fulfilled by Razorpay Payment
@@ -342,7 +493,39 @@ const Checkoutpage = (): JSX.Element => {
             </div>
 
             <h3 className="mb-4 mt-8 font-bold text-xl text-heading">Order</h3>
-            {/* TODO: To fetch from /cart and show the orders in simple cards */}
+            {cartDataLoaded ? (
+              <>
+                {cartCardsData?.map((item) => {
+                  return (
+                    <>
+                      <Link to={`/coursedetails/${item?.courseSlug}`}>
+                        <div className="border flex flex-row p-2 my-1">
+                          <img
+                            className="w-3/12"
+                            src={item?.imageurl}
+                            alt={item?.title}
+                          />
+                          <h1 className="p-2 hover:text-findemypurple">
+                            {item?.title}
+                          </h1>
+                          <div className="flex flex-col items-center justify-center">
+                            <p className="text-findemypurple">₹{item?.price}</p>
+                            <p className="line-through text-sm font-light">
+                              ₹{item?.oldPrice}
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {/* TODO: Skeleton loader */}
+                <p>Please wait...</p>
+              </>
+            )}
           </div>
           <div className="flex flex-col w-full ml-0 lg:ml-12 lg:w-4/12 bg-blue-50 h-auto lg:h-screen p-4">
             <h3 className="mb-4 font-bold text-xl text-heading">Summary</h3>
@@ -350,19 +533,25 @@ const Checkoutpage = (): JSX.Element => {
               <p className="text-primaryblack font-light text-base">
                 Original Price:
               </p>
-              <p className="text-primaryblack font-light text-base">₹4,543</p>
+              <p className="text-primaryblack font-light text-base">
+                ₹{cartOldPrice}
+              </p>
             </div>
             <div className="flex flex-row w-full justify-between border-b-2 pb-4 border-gray-400 my-1">
               <p className="text-primaryblack font-light text-base">
                 Discounts:
               </p>
-              <p className="text-primaryblack font-light text-base">-₹1,222</p>
+              <p className="text-primaryblack font-light text-base">
+                -₹{cartOldPrice - cartNewPrice}
+              </p>
             </div>
             <div className="flex flex-row w-full justify-between my-3">
               <p className="text-primaryblack font-bold text-2xl">Total:</p>
-              <p className="text-primaryblack font-bold text-2xl">₹9,543</p>
+              <p className="text-primaryblack font-bold text-2xl">
+                ₹{cartNewPrice}
+              </p>
             </div>
-            <p className="text-xs font-light">
+            <p className="text-xs font-light text-center">
               By completing your purchase you agree to these{" "}
               <a
                 href="https://www.udemy.com/terms/"
@@ -373,7 +562,10 @@ const Checkoutpage = (): JSX.Element => {
               </a>
             </p>
             <div className="flex w-full justify-end">
-              <button className="p-3 bg-findemypurple rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm">
+              <button
+                onClick={() => handleCheckout()}
+                className="p-3 bg-findemypurple focus:outline-none rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm"
+              >
                 Complete Checkout
               </button>
             </div>

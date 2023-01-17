@@ -25,8 +25,11 @@ interface SearchcardProps {
 
 const Searchpage = (): JSX.Element => {
   const [searchCardData, setSearchCardData] = useState<SearchcardProps[]>();
+  const [searchCardDataCopy, setSearchCardDataCopy] =
+    useState<SearchcardProps[]>();
   const [resultLength, setResultLength] = useState<number>();
   const [searchDataLoaded, setSearchDataLoaded] = useState<boolean>(false);
+  const [appliedFilters, setAppliedFilters] = useState<any>([]);
 
   const useQuery = () => {
     const { search } = useLocation();
@@ -38,6 +41,7 @@ const Searchpage = (): JSX.Element => {
   const searchString = query.get("query");
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchCourses();
   }, [searchString]);
 
@@ -45,10 +49,36 @@ const Searchpage = (): JSX.Element => {
     const _res = await getSearchedCourses(searchString);
     if (_res) {
       setSearchCardData(_res.data);
+      setSearchCardDataCopy(_res.data);
       setResultLength(_res.data.length);
       setSearchDataLoaded(true);
     }
   };
+
+  const handleFilterChange = (e) => {
+    if (!appliedFilters.includes(e.target.value)) {
+      appliedFilters.push(e.target.value);
+    } else {
+      const index = appliedFilters.indexOf(e.target.value);
+      if (index > -1) {
+        appliedFilters.splice(index, 1);
+      }
+    }
+
+    if (appliedFilters.length !== 0) {
+      renderFilteredResults(appliedFilters);
+    } else {
+      setSearchCardData(searchCardDataCopy);
+    }
+  };
+
+  const renderFilteredResults = (appliedFilters) => {
+    const _data = searchCardDataCopy.filter((item) => {
+      return appliedFilters.includes(item.level);
+    });
+    setSearchCardData(_data);
+  };
+
   return (
     <>
       <NavbarComponent />
@@ -56,22 +86,36 @@ const Searchpage = (): JSX.Element => {
         <h1 className="mb-4">
           {resultLength} result{resultLength > 1 && "s"} for "{searchString}"
         </h1>
+        {appliedFilters.length > 0 && (
+          <p className="text-base font-light">
+            {searchCardData?.length} results for filter - Level:{" "}
+            {appliedFilters?.map((item) => {
+              return (
+                <span className="font-semibold">
+                  {item}
+                  {", "}
+                </span>
+              );
+            })}
+          </p>
+        )}
 
-        <div className="flex min-h-screen flex-row bg-gray-100 text-gray-800 mt-2 lg:mt-12">
-          <aside className="hidden md:block w-48 -translate-x-full transform bg-white transition-transform duration-150 ease-in md:translate-x-0">
+        <div className="flex min-h-screen flex-col lg:flex-row bg-gray-100 text-gray-800 mt-2 lg:mt-12">
+          <aside className="block w-full lg:w-48 translate-x-0 md:translate-x-0 transform bg-white transition-transform duration-150 ease-in">
             <h2>Filters</h2>
             <p className="text-lg font-semibold mt-4">Level</p>
             <div className="flex flex-col">
               <div className="flex flex-row my-2">
                 <input
                   type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
+                  id="beginner-checkbox"
+                  name="course-filter"
+                  value="Beginner"
+                  onChange={(e) => handleFilterChange(e)}
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="vehicle1"
+                  htmlFor="beginner-filter"
                 >
                   {" "}
                   Beginner
@@ -80,13 +124,14 @@ const Searchpage = (): JSX.Element => {
               <div className="flex flex-row my-2">
                 <input
                   type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
+                  id="all-levels-checkbox"
+                  name="course-filter"
+                  value="All levels"
+                  onChange={(e) => handleFilterChange(e)}
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="vehicle1"
+                  htmlFor="all-levels-filter"
                 >
                   {" "}
                   All levels
@@ -95,13 +140,14 @@ const Searchpage = (): JSX.Element => {
               <div className="flex flex-row my-2">
                 <input
                   type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
+                  id="intermediate-checkbox"
+                  name="course-filter"
+                  value="Intermediate"
+                  onChange={(e) => handleFilterChange(e)}
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="vehicle1"
+                  htmlFor="intermediate-checkbox"
                 >
                   {" "}
                   Intermediate
@@ -110,13 +156,14 @@ const Searchpage = (): JSX.Element => {
               <div className="flex flex-row my-2">
                 <input
                   type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
+                  id="expert-checkbox"
+                  name="course-filter"
+                  value="Expert"
+                  onChange={(e) => handleFilterChange(e)}
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="vehicle1"
+                  htmlFor="expert-checkbox"
                 >
                   {" "}
                   Expert
@@ -134,7 +181,10 @@ const Searchpage = (): JSX.Element => {
                   <Searchcardloader />
                   <Searchcardloader />
                 </div>
-                <div className="block lg:hidden">
+                <div className="block lg:hidden space-y-5">
+                  <Searchcardloader />
+                  <Searchcardloader />
+                  <Searchcardloader />
                   <Searchcardloader />
                 </div>
               </>
@@ -143,7 +193,7 @@ const Searchpage = (): JSX.Element => {
             {searchCardData?.length > 0 && searchDataLoaded ? (
               searchCardData?.map((data) => {
                 return (
-                  <div key={data.id} className="px-2">
+                  <div key={data?.id} className="px-2">
                     <SearchcardComponent
                       id={data?.id}
                       imageurl={data?.imageurl}
@@ -163,10 +213,12 @@ const Searchpage = (): JSX.Element => {
               })
             ) : (
               <>
-                <div className="flex flex-col w-full items-center justify-center">
-                  <h1 className="text-4xl">🫤</h1>
-                  <p>No relevant search results found!</p>
-                </div>
+                {searchDataLoaded && (
+                  <div className="flex flex-col w-full items-center justify-center">
+                    <h1 className="text-4xl">🫤</h1>
+                    <p>No relevant search results found!</p>
+                  </div>
+                )}
               </>
             )}
           </main>
