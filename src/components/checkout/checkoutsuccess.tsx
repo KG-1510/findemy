@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { getUserProfile } from "../../utils/api";
+import Checkoutordersloader from "./checkoutordersloader";
 
 const Checkoutsuccesspage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
@@ -78,8 +79,10 @@ const Checkoutsuccesspage = (): JSX.Element => {
             </>
           ) : (
             <>
-              {/* TODO: Skeleton loader */}
-              <p>Please wait...</p>
+              <div className="flex flex-col space-y-3 my-2">
+                <Checkoutordersloader />
+                <Checkoutordersloader />
+              </div>
             </>
           )}
         </div>

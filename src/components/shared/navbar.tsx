@@ -37,7 +37,7 @@ const Navbar = (): JSX.Element => {
   }, []);
 
   const handleSearch = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
       navigate(`/search?query=${e.target.value}`);
     }
@@ -74,9 +74,11 @@ const Navbar = (): JSX.Element => {
                     </p>
                   </div>
                   <div className="flex flex-col w-full space-y-2 text-center px-4 py-2">
-                    <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
-                      My learning
-                    </p>
+                    <Link to={"/mylearnings"}>
+                      <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
+                        My learnings
+                      </p>
+                    </Link>
                     <Link to={"/cart"}>
                       <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
                         My cart
@@ -165,7 +167,10 @@ const Navbar = (): JSX.Element => {
             F<span className="text-findemypurple">i</span>ndemy
           </h2>
         </Link>
-        <form className="hidden bg-[#f8fafb] md:flex border border-primaryblack rounded-3xl py-5 flex-1 h-1/2 items-center">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="hidden bg-[#f8fafb] md:flex border border-primaryblack rounded-3xl py-5 flex-1 h-1/2 items-center"
+        >
           <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
           <input
             type="search"
@@ -185,7 +190,7 @@ const Navbar = (): JSX.Element => {
 
           {isUserLoggedIn && (
             <>
-              <Link to={"/cart"}>
+              <Link to={"/mylearnings"}>
                 <button className="hidden md:flex h-10 px-2 items-center text-sm font-light mx-2 justify-center hover:bg-[#F5F5F5]">
                   My learnings
                 </button>
@@ -262,9 +267,11 @@ const Navbar = (): JSX.Element => {
                       </div>
                     </div>
                     <div className="flex flex-col space-y-4 text-left px-4 py-2">
-                      <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
-                        My learning
-                      </p>
+                      <Link to={"/mylearnings"}>
+                        <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
+                          My learnings
+                        </p>
+                      </Link>
                       <Link to={"/cart"}>
                         <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
                           My cart
@@ -298,11 +305,16 @@ const Navbar = (): JSX.Element => {
       </nav>
       {showSearchBarMobile && (
         <div className="p-2 bg-white drop-shadow-md">
-          <form className="flex bg-[#f8fafb] md:hidden w-full border border-primaryblack rounded-3xl py-5 flex-1 h-10 items-center">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex bg-[#f8fafb] md:hidden w-full border border-primaryblack rounded-3xl py-5 flex-1 h-10 items-center"
+          >
             <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
             <input
               type="search"
-              onKeyDown={(e) => handleSearch(e)}
+              onKeyDown={(e) => {
+                handleSearch(e);
+              }}
               aria-label="Search"
               placeholder="Search for anything"
               className="bg-transparent text-sm font-normal outline-none p-2 w-full"

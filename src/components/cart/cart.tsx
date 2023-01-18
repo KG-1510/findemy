@@ -43,7 +43,8 @@ const Cartpage = (): JSX.Element => {
             } `}
           >
             <p className="text-base text-gray-500 font-normal mb-8">
-              {cartCardsData?.length} Courses in Cart
+              {cartCardsData?.length} Course{" "}
+              {cartCardsData?.length > 1 ? "s" : ""} in Cart
             </p>
             {cartCardsData?.length === 0 && cartDataLoaded && (
               <div className="flex flex-col w-full items-center justify-center">

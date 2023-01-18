@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useContext } from "react";
 import { AuthContext } from "../../App";
+import { password_regex } from "../../utils/constants";
 
 type SignUpInputs = {
   fullName: string;
@@ -41,7 +42,7 @@ const Signuppage = (): JSX.Element => {
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
     handleSignup(data);
   };
-  const password_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+  
   return (
     <>
       <NavbarComponent />

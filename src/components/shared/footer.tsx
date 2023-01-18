@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = (): JSX.Element => {
   return (
     <footer className="bg-primaryblack">
@@ -168,16 +170,18 @@ const Footer = (): JSX.Element => {
           </div>
         </div>
       </div>
-      <div className="bg-primaryblack">
-        <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
-          <h2 className="text-3xl text-white text-center lg:text-left font-bold hover:cursor-pointer">
-            F<span className="text-findemypurple">i</span>ndemy
-          </h2>
-          <span className="inline-flex text-white font-normal text-sm sm:ml-auto sm:mt-0 mt-2 justify-center items-center">
-            <p>© 2023 Findemy, Inc.</p>
-          </span>
+      <Link to={"/"}>
+        <div className="bg-primaryblack">
+          <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
+            <h2 className="text-3xl text-white text-center lg:text-left font-bold hover:cursor-pointer">
+              F<span className="text-findemypurple">i</span>ndemy
+            </h2>
+            <span className="inline-flex text-white font-normal text-sm sm:ml-auto sm:mt-0 mt-2 justify-center items-center">
+              <p>© 2023 Findemy, Inc.</p>
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
     </footer>
   );
 };

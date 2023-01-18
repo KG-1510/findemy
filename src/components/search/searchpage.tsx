@@ -48,6 +48,7 @@ const Searchpage = (): JSX.Element => {
   const fetchCourses = async () => {
     const _res = await getSearchedCourses(searchString);
     if (_res) {
+      console.log(_res)
       setSearchCardData(_res.data);
       setSearchCardDataCopy(_res.data);
       setResultLength(_res.data.length);

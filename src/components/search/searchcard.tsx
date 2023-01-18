@@ -1,5 +1,13 @@
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
+import {
+  getUserCart,
+  getUserProfile,
+  postAddCart,
+  successHandler,
+} from "../../utils/api";
 
 interface SearchcardProps {
   //   onCardClick: () => void;
@@ -33,6 +41,52 @@ const Searchcard = ({
   category,
   level,
 }: SearchcardProps): JSX.Element => {
+  const [cookie, _] = useCookies(["authToken"]);
+  const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
+  const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (cookie?.authToken) {
+      console.log("rannn");
+      const _data = JSON.parse(localStorage.getItem("userData"));
+      courseExistsInCart(_data?._id);
+      courseEnrolledByUser(_data?._id);
+    }
+  });
+
+  const courseExistsInCart = async (userId: string) => {
+    const _res = await getUserCart(cookie?.authToken, userId);
+    if (_res) {
+      if (_res?.data?.cart?.some((item) => item.courseSlug === courseSlug)) {
+        setCartCourseExists(true);
+      }
+    }
+  };
+
+  const courseEnrolledByUser = async (userId: string) => {
+    const _res = await getUserProfile(cookie?.authToken, userId);
+    if (_res) {
+      if (
+        _res?.data?.coursesEnrolled?.some(
+          (item) => item.courseSlug === courseSlug
+        )
+      ) {
+        setCoursePurchased(true);
+      }
+    }
+  };
+
+  const addCourseToCart = async () => {
+    if (cookie?.authToken) {
+      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _res = await postAddCart(cookie?.authToken, _data?._id, courseSlug);
+      if (_res) {
+        successHandler("Added to cart successfully! 🎉");
+        courseExistsInCart(_data?._id);
+      }
+    }
+  };
+
   return (
     <>
       <Link to={`/coursedetails/${courseSlug}`}>
@@ -97,11 +151,39 @@ const Searchcard = ({
                   </p>
                 </div>
               )}
-              <div className="w-full text-right mt-2 lg:mt-0">
-                <button className="p-2 bg-findemypurple hover:opacity-90 w-8/12 lg:w-4/12 text-white font-semibold text-sm">
-                  Add to cart
-                </button>
-              </div>
+
+              {coursePurchased ? (
+                <div className="w-full text-right mt-2 lg:mt-0">
+                  <Link to={`/coursedetails/${courseSlug}`}>
+                    <button className="p-2 bg-findemypurple hover:opacity-90 w-8/12 lg:w-4/12 text-white font-semibold text-sm">
+                      <span className="flex flex-row text-center w-full items-center justify-center">
+                        ✓ Start learning
+                      </span>
+                    </button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="w-full text-right mt-2 lg:mt-0">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addCourseToCart();
+                    }}
+                    disabled={cartCourseExists}
+                    className={`${
+                      cartCourseExists && "cursor-not-allowed opacity-70"
+                    } p-2 bg-findemypurple hover:opacity-90 w-8/12 lg:w-4/12 text-white font-semibold text-sm`}
+                  >
+                    {cartCourseExists ? (
+                      <span className="flex flex-row text-center w-full items-center justify-center">
+                        ✓ Added to cart!
+                      </span>
+                    ) : (
+                      <>Add to cart</>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

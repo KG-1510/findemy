@@ -4,6 +4,7 @@ import { HiOutlineFolderDownload } from "react-icons/hi";
 import { IoIosInfinite } from "react-icons/io";
 import { BiMobileAlt } from "react-icons/bi";
 import {
+  errorHandler,
   getUserCart,
   getUserProfile,
   postAddCart,
@@ -11,7 +12,8 @@ import {
 } from "../../utils/api";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { clienBaseUrl } from "../../utils/constants";
 
 interface CoursepreviewProps {
   //   onCardClick: () => void;
@@ -71,6 +73,9 @@ const Coursepreview = ({
         successHandler("Added to cart successfully! 🎉");
         courseExistsInCart(_data?._id);
       }
+    } else {
+      successHandler("Hold on, login to continue!");
+      navigate("/login");
     }
   };
 
@@ -78,9 +83,18 @@ const Coursepreview = ({
     addCourseToCart();
     navigate("/checkout");
   };
+
+  const copyToClipBoard = async (copyMe: string) => {
+    try {
+      await navigator.clipboard.writeText(copyMe);
+      successHandler("📋 Link copied to clipboard!");
+    } catch (err) {
+      errorHandler(err);
+    }
+  };
   return (
     <>
-      <div className="block lg:absolute top-28 right-10 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-4/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md">
+      <div className="block lg:absolute z-40 top-28 right-10 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-4/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md">
         {!coursePurchased ? (
           <img alt="img" src={imageurl} />
         ) : (
@@ -170,7 +184,12 @@ const Coursepreview = ({
             </div>
           </div>
           <div className="flex flex-row w-full justify-around">
-            <p className="underline hover:text-findemypurple cursor-pointer">
+            <p
+              onClick={() =>
+                copyToClipBoard(`${clienBaseUrl}/coursedetails/${courseSlug}`)
+              }
+              className="underline hover:text-findemypurple cursor-pointer"
+            >
               Share
             </p>
             <p className="underline hover:text-findemypurple cursor-pointer">

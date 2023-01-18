@@ -11,6 +11,9 @@ import { HomepageComponent } from "./components/homepage";
 import { LoginpageComponent } from "./components/login";
 import { SearchpageComponent } from "./components/search";
 import { SignuppageComponent } from "./components/signup";
+import { MylearningsComponent } from "./components/mylearnings";
+import { NotfoundComponent } from "./components/shared";
+import ProtectedRoute from "./protectedroutes";
 import "react-toastify/dist/ReactToastify.css";
 
 export const AuthContext = createContext<any>(null);
@@ -32,29 +35,27 @@ function App() {
             <Route path="/login" element={<LoginpageComponent />}></Route>
             <Route path="/signup" element={<SignuppageComponent />}></Route>
             <Route path="/search" element={<SearchpageComponent />}></Route>
-            <Route path="/cart" element={<CartpageComponent />}></Route>
             <Route
               path="/coursedetails/:courseSlug"
               element={<CoursedetailsComponent />}
             ></Route>
-            <Route path="/checkout" element={<CheckoutpageComponent />}></Route>
-            <Route
-              path="/checkoutsuccess"
-              element={<Checkoutsuccesspage />}
-            ></Route>
-            {/* <Route path="/register" element={<RegisterComponent />}></Route> */}
-            {/* <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardComponent />}></Route>
-          <Route path="/profile" element={<ProfileComponent />}></Route>
-          <Route path="/ledger" element={<LedgerComponent />}></Route>
-        </Route> */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/cart" element={<CartpageComponent />}></Route>
+              <Route
+                path="/checkout"
+                element={<CheckoutpageComponent />}
+              ></Route>
+              <Route
+                path="/checkoutsuccess"
+                element={<Checkoutsuccesspage />}
+              ></Route>
+              <Route
+                path="/mylearnings"
+                element={<MylearningsComponent />}
+              ></Route>
+            </Route>
+            <Route path="*" element={<NotfoundComponent />} />
           </Routes>
-          {/* <ProtectedRoute
-          exact
-          path="/dashboard"
-          component={<DashboardComponent />}
-          auth={true}
-        /> */}
         </Router>
       </AuthContext.Provider>
     </>

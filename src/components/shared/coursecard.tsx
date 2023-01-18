@@ -12,8 +12,8 @@ interface CoursecardProps {
   instructorName: string;
   rating: string;
   votes: string;
-  price: number;
-  oldPrice: number;
+  price?: number;
+  oldPrice?: number;
   category: string;
   tag?: string;
   level?: string;
@@ -44,7 +44,7 @@ const Coursecard = ({
           <h2 className="card-title font-bold text-lg leading-5 pt-1 overflow-hidden">
             {title}
           </h2>
-          
+
           <h2 className="text-xs text-gray-700 font-light">{instructorName}</h2>
           <div className="flex flex-row space-x-1">
             <h3 className="text-orange-800 pt-1 font-bold text-sm flex items-center justify-center">
@@ -64,12 +64,14 @@ const Coursecard = ({
               ({votes})
             </h3>
           </div>
-          <div className="flex items-center">
-            <h3 className="text-primaryblack font-bold text-lg">₹{price}</h3>
-            <h3 className="text-gray-500 font-light text-sm line-through px-2">
-              ₹{oldPrice}
-            </h3>
-          </div>
+          {oldPrice && price && (
+            <div className="flex items-center">
+              <h3 className="text-primaryblack font-bold text-lg">₹{price}</h3>
+              <h3 className="text-gray-500 font-light text-sm line-through px-2">
+                ₹{oldPrice}
+              </h3>
+            </div>
+          )}
           <div className="my-1">
             {tag === "Bestseller" && (
               <div>

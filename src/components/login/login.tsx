@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { postLoginUser, successHandler } from "../../utils/api";
 import { AuthContext } from "../../App";
+import { GoogleLogin } from "react-google-login";
 
 type LogInInputs = {
   email: string;
@@ -18,7 +19,8 @@ const Loginpage = (): JSX.Element => {
   const [_, setCookie] = useCookies(["authToken"]);
   const navigate = useNavigate();
   const { setIsUserLoggedIn } = useContext(AuthContext);
-  console.log();
+
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const handleLogin = async (data: LogInInputs) => {
     const _res = await postLoginUser(data);
@@ -34,10 +36,15 @@ const Loginpage = (): JSX.Element => {
       localStorage.setItem("userData", JSON.stringify(payload));
       successHandler(`You're logged in! Welcome ${_res.data.fullName}`);
       navigate("/");
-
-      // setCourseCardsData(_res.data);
-      // setCourseDataLoaded(true);
     }
+  };
+
+  const onGoogleLoginSuccess = (res) => {
+    console.log("User logged in with Google", res.profileObj);
+  };
+
+  const onGoogleLoginFailure = (res) => {
+    console.log("FAILURE: User logged in with Google", res);
   };
 
   const {
@@ -77,6 +84,13 @@ const Loginpage = (): JSX.Element => {
             <p className="px-2">Continue with Google</p>
           </div>
         </button>
+        {/* <GoogleLogin
+          clientId={clientId}
+          buttonText={"Continue with Google"}
+          onSuccess={onGoogleLoginSuccess}
+          onFailure={onGoogleLoginFailure}
+          isSignedIn={true}
+        /> */}
         <button className="bg-white hover:bg-[#F5F5F5] border border-gray-300 shadow-md py-3 w-10/12 lg:w-3/12 my-1">
           <div className="flex flex-row">
             <img

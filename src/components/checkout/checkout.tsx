@@ -1,3 +1,4 @@
+import { useForm, SubmitHandler } from "react-hook-form";
 import { FooterComponent, NavbarComponent } from "../shared";
 import { AiFillLock } from "react-icons/ai";
 import { useEffect, useState } from "react";
@@ -10,9 +11,22 @@ import {
   successHandler,
 } from "../../utils/api";
 import axios from "axios";
-import { baseUrl } from "../../utils/constants";
+import {
+  baseUrl,
+  expiration_date_regex,
+  indian_states_ut,
+  upi_vpa_regex,
+} from "../../utils/constants";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { Checkoutordersloader } from ".";
+
+type CardPaymentInputs = {
+  nameOnCard: string;
+  cardNumber: string;
+  cvv: number;
+  expirationDate: string;
+};
 
 const Checkoutpage = (): JSX.Element => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState<string>("");
@@ -156,6 +170,18 @@ const Checkoutpage = (): JSX.Element => {
     rzpObject.open();
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CardPaymentInputs | any>();
+  const onSubmit: SubmitHandler<CardPaymentInputs | any> = (data) => {
+    console.log("Form data:", data);
+    if (data) {
+      handleCheckout();
+    }
+  };
+
   return (
     <>
       <NavbarComponent />
@@ -203,13 +229,9 @@ const Checkoutpage = (): JSX.Element => {
                   name="state"
                 >
                   <option selected={true}>Please select...</option>
-                  <option value={"Maharashtra"}>Maharashtra</option>
-                  <option value={"Karnataka"}>Karnataka</option>
-                  <option value={"Andaman and Nicobar"}>
-                    Andaman and Nicobar
-                  </option>
-                  <option value={"Gujarat"}>Gujarat</option>
-                  <option value={"Tamil Nadu"}>Tamil Nadu</option>
+                  {indian_states_ut.map((item) => {
+                    return <option value={item}>{item}</option>;
+                  })}
                 </select>
               </div>
             </div>
@@ -265,69 +287,123 @@ const Checkoutpage = (): JSX.Element => {
                     </label>
                   </div>
                   {selectedPaymentMode === "card" && (
-                    <div className="overflow-hidden bg-white leading-normal p-4">
-                      <div className="w-full">
-                        <label
-                          htmlFor="nameOnCard"
-                          className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
-                        >
-                          <span>Name on card</span>
-                        </label>
-                        <input
-                          name="nameOnCard"
-                          type="text"
-                          placeholder="Name on card"
-                          className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
-                        />
-                      </div>
-
-                      <div className="w-full">
-                        <label
-                          htmlFor="cardNumber"
-                          className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
-                        >
-                          <span>Card number</span>
-                        </label>
-                        <input
-                          name="cardNumber"
-                          type="text"
-                          placeholder="0000 0000 0000 0000"
-                          className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
-                        />
-                      </div>
-
-                      <div className="w-full flex flex-row space-x-3">
+                    <form
+                      className="w-full flex flex-col items-center justify-center"
+                      onSubmit={handleSubmit(onSubmit)}
+                    >
+                      <div className="overflow-hidden bg-white leading-normal p-4 w-full">
                         <div className="w-full">
                           <label
-                            htmlFor="cvv"
+                            htmlFor="nameOnCard"
                             className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
                           >
-                            <span>CVV / CVC</span>
+                            <span>Name on card</span>
                           </label>
                           <input
-                            name="cvv"
-                            type="password"
-                            placeholder="CVV / CVC"
-                            className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
-                          />
-                        </div>
-
-                        <div className="w-full">
-                          <label
-                            htmlFor="expirationDate"
-                            className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
-                          >
-                            <span>Expiration Date</span>
-                          </label>
-                          <input
-                            name="expirationDate"
+                            name="nameOnCard"
                             type="text"
-                            placeholder="MM/YY"
+                            placeholder="Name on card"
                             className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
+                            {...register("nameOnCard", { required: true })}
                           />
+                          {errors.nameOnCard && (
+                            <span className="text-red-500 font-light text-xs">
+                              This field is required!
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="w-full">
+                          <label
+                            htmlFor="cardNumber"
+                            className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
+                          >
+                            <span>Card number</span>
+                          </label>
+                          <input
+                            name="cardNumber"
+                            type="text"
+                            placeholder="0000 0000 0000 0000"
+                            onKeyUp={(e: any) => {
+                              let cardnumspaced = e.target.value
+                                .replace(/\W/gi, "")
+                                .replace(/(.{4})/g, "$1 ");
+                              e.target.value = cardnumspaced;
+                              console.log(e.target.value);
+                            }}
+                            className="w-full text-base font-normal tracking-wider px-4 py-2 focus:outline-none border border-black"
+                            {...register("cardNumber", {
+                              required: true,
+                              maxLength: 23,
+                            })}
+                          />
+                          {errors.cardNumber && (
+                            <span className="text-red-500 font-light text-xs">
+                              This field is required!
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="w-full flex flex-row space-x-3">
+                          <div className="w-full">
+                            <label
+                              htmlFor="cvv"
+                              className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
+                            >
+                              <span>CVV / CVC</span>
+                            </label>
+                            <input
+                              name="cvv"
+                              type="password"
+                              placeholder="CVV / CVC"
+                              className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
+                              {...register("cvv", {
+                                required: true,
+                                minLength: 3,
+                                maxLength: 3,
+                              })}
+                            />
+                            {errors.cvv && (
+                              <span className="text-red-500 font-light text-xs">
+                                This field is required!
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="w-full">
+                            <label
+                              htmlFor="expirationDate"
+                              className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
+                            >
+                              <span>Expiration Date</span>
+                            </label>
+                            <input
+                              name="expirationDate"
+                              type="text"
+                              placeholder="MM/YY"
+                              className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
+                              {...register("expirationDate", {
+                                required: true,
+                                pattern: expiration_date_regex,
+                              })}
+                            />
+                            {errors.expirationDate && (
+                              <span className="text-red-500 font-light text-xs">
+                                This field is required!
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      <div className="flex w-full justify-end">
+                        <button
+                          type="submit"
+                          className="p-3 bg-findemypurple hover:opacity-90 w-8/12 mx-auto my-3 text-white font-semibold text-sm"
+                        >
+                          Make Payment
+                        </button>
+                      </div>
+                    </form>
                   )}
                 </div>
 
@@ -363,26 +439,40 @@ const Checkoutpage = (): JSX.Element => {
                           Enter your UPI ID / VPA and make payment on your UPI
                           app.
                         </p>
-                        <label
-                          htmlFor="upiID"
-                          className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
+                        <form
+                          className="w-full flex flex-col items-center justify-center"
+                          onSubmit={handleSubmit(onSubmit)}
                         >
-                          UPI ID / VPA
-                        </label>
-                        <input
-                          name="upiID"
-                          type="text"
-                          placeholder="johndoe@okbank"
-                          className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
-                        />
-                        <div className="flex w-full justify-end">
-                          <button
-                            onClick={() => handleCheckout()}
-                            className="p-3 bg-findemypurple hover:opacity-90 w-8/12 mx-auto my-3 text-white font-semibold text-sm"
+                          <label
+                            htmlFor="upiID"
+                            className="flex flex-row justify-between mb-1 mt-2 text-sm font-semibold text-primaryblack"
                           >
-                            Make Payment
-                          </button>
-                        </div>
+                            UPI ID / VPA
+                          </label>
+
+                          <input
+                            name="upiID"
+                            type="text"
+                            placeholder="johndoe@okbank or 9876543210@okbank"
+                            className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
+                            {...register("upiID", {
+                              pattern: upi_vpa_regex,
+                            })}
+                          />
+                          {errors.upiID && (
+                            <span className="text-red-500 font-light text-xs">
+                              This field is required!
+                            </span>
+                          )}
+                          <div className="flex w-full justify-end">
+                            <button
+                              type="submit"
+                              className="p-3 bg-findemypurple hover:opacity-90 w-8/12 mx-auto my-3 text-white font-semibold text-sm"
+                            >
+                              Make Payment
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   )}
@@ -522,8 +612,10 @@ const Checkoutpage = (): JSX.Element => {
               </>
             ) : (
               <>
-                {/* TODO: Skeleton loader */}
-                <p>Please wait...</p>
+                <div className="flex flex-col space-y-3 my-2">
+                  <Checkoutordersloader />
+                  <Checkoutordersloader />
+                </div>
               </>
             )}
           </div>
@@ -561,14 +653,17 @@ const Checkoutpage = (): JSX.Element => {
                 <span className="text-findemypurple">Terms of Service.</span>
               </a>
             </p>
-            <div className="flex w-full justify-end">
-              <button
-                onClick={() => handleCheckout()}
-                className="p-3 bg-findemypurple focus:outline-none rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm"
-              >
-                Complete Checkout
-              </button>
-            </div>
+            {selectedPaymentMode !== "card" &&
+              selectedPaymentMode !== "upi" && (
+                <div className="flex w-full justify-end">
+                  <button
+                    onClick={() => handleCheckout()}
+                    className="p-3 bg-findemypurple focus:outline-none rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm"
+                  >
+                    Complete Checkout
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>
