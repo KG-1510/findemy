@@ -50,11 +50,29 @@ const Checkoutpage = (): JSX.Element => {
 
   const fetchCartItems = async (authToken: string, userId: string) => {
     const _res = await getUserCart(authToken, userId);
-    if (_res) {
+    if (_res?.data?.cart.length !== 0) {
       setCartCardsData(_res?.data?.cart);
       setCartOldPrice(_res?.data?.oldPriceTotal);
       setCartNewPrice(_res?.data?.newPriceTotal);
       setCartDataLoaded(true);
+    } else {
+      navigate("/");
+      {
+        toast.error(
+          "Your cart is empty, add items to cart before purchasing!",
+          {
+            toastId: "cart-empty",
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            className: "font-DMSans",
+          }
+        );
+      }
     }
   };
 
@@ -205,6 +223,7 @@ const Checkoutpage = (): JSX.Element => {
                   </span>
                 </label>
                 <input
+                  aria-label="country"
                   name="country"
                   type="text"
                   placeholder="Country"

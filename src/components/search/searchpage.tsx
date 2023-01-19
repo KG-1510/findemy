@@ -116,7 +116,7 @@ const Searchpage = (): JSX.Element => {
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="beginner-filter"
+                  htmlFor="beginner-checkbox"
                 >
                   {" "}
                   Beginner
@@ -132,7 +132,7 @@ const Searchpage = (): JSX.Element => {
                 />
                 <label
                   className="text-base font-normal mx-1"
-                  htmlFor="all-levels-filter"
+                  htmlFor="all-levels-checkbox"
                 >
                   {" "}
                   All levels

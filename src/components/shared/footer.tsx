@@ -14,7 +14,7 @@ const Footer = (): JSX.Element => {
                   rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
-                  Udemy Business
+                  Findemy Business
                 </a>
               </li>
               <li className="my-2">
@@ -24,7 +24,7 @@ const Footer = (): JSX.Element => {
                   rel="noreferrer"
                   className="text-white font-light text-sm hover:text-findemypurple"
                 >
-                  Teach on Udemy
+                  Teach on Findemy
                 </a>
               </li>
               <li className="my-2">

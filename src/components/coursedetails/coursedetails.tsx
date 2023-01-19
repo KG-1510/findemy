@@ -1,5 +1,5 @@
 import StarRatings from "react-star-ratings";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { VscGlobe } from "react-icons/vsc";
 
@@ -42,6 +42,24 @@ const Coursedetailspage = (): JSX.Element => {
 
   const [courseDetailsData, setCourseDetailsData] =
     useState<CoursedetailsProps>();
+  const [isTitleBarVisible, setIsTitleBarVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", listenToScroll);
+    return () => window.removeEventListener("scroll", listenToScroll);
+  }, []);
+
+  const listenToScroll = () => {
+    let heightToShowFrom = 300;
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+
+    if (winScroll > heightToShowFrom) {
+      setIsTitleBarVisible(true);
+    } else {
+      setIsTitleBarVisible(false);
+    }
+  };
 
   useEffect(() => {
     fetchCourseDetails();
@@ -70,6 +88,52 @@ const Coursedetailspage = (): JSX.Element => {
     <>
       <NavbarComponent />
       <div className="w-full">
+        {isTitleBarVisible && (
+          <>
+            <div className="hidden lg:block fixed bg-primaryblack h-20 z-50 w-full top-16 py-4 px-10 animate-fadeIn">
+              <h1 className="text-white">{courseDetailsData?.title}</h1>
+              <div className="flex flex-row space-x-1 justify-start">
+                <div className="my-1">
+                  {courseDetailsData?.tag === "Bestseller" && (
+                    <div>
+                      <p className="bg-[#ECEB98] text-primaryblack font-bold text-xs py-0.5 px-1">
+                        Bestseller
+                      </p>
+                    </div>
+                  )}
+                  {courseDetailsData?.tag === "Coding Exercises" && (
+                    <div>
+                      <p className="bg-[#CEBFFC] w-full text-primaryblack font-bold text-xs py-0.5 px-1">
+                        Coding Exercises
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <h3 className="text-orange-400 font-bold pt-0.5 text-sm flex items-center justify-center">
+                  {courseDetailsData?.rating}
+                </h3>
+                <div>
+                  {courseDetailsData?.rating && (
+                    <StarRatings
+                      rating={parseFloat(courseDetailsData?.rating)}
+                      starRatedColor="orange"
+                      numberOfStars={5}
+                      starDimension="15px"
+                      starSpacing="0px"
+                      name="courserating"
+                    />
+                  )}
+                </div>
+                <h3 className="text-xs text-purple-300 underline font-light pt-0.5 flex items-center justify-center">
+                  1,855 ratings
+                </h3>
+                <h3 className="text-xs text-white font-light pt-0.5 flex items-center justify-center">
+                  ({courseDetailsData?.votes})
+                </h3>
+              </div>
+            </div>
+          </>
+        )}
         <CoursepreviewComponent
           price={courseDetailsData?.price}
           imageurl={courseDetailsData?.imageurl}
@@ -77,10 +141,21 @@ const Coursedetailspage = (): JSX.Element => {
         />
         <div className="bg-primaryblack w-full text-white">
           <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
+            <div className="flex flex-row space-x-3 my-3">
+              <Link to={`/search?query=${courseDetailsData?.category}`}>
+                <span className="text-findemypurple hover:opacity-80 cursor-pointer font-light mx-1">
+                  {courseDetailsData?.category}{" "}
+                </span>
+              </Link>
+              <span className="text-white font-light mx-1">{">"}</span>{" "}
+              <span className="text-findemypurple hover:opacity-80 cursor-pointer font-light mx-1">
+                {courseDetailsData?.title}
+              </span>
+            </div>
             <h1 className="font-bold text-3xl">{courseDetailsData?.title}</h1>
             {sanitizedCourseDescription && (
               <MarkdownView
-                className="text-sm font-normal"
+                className="text-lg font-normal h-14 card-title"
                 style={{ whiteSpace: "pre-line" }}
                 markdown={truncateText(sanitizedCourseDescription, 100, 100)}
               />
@@ -148,7 +223,7 @@ const Coursedetailspage = (): JSX.Element => {
           </div>
         </div>
 
-        <div className="h-full py-10 px-4 lg:pl-32 lg:pr-20 w-full lg:w-8/12">
+        <div className="h-full py-10 px-4 lg:pl-32 lg:pr-10 w-full lg:w-8/12">
           <div className="border border-1 p-4">
             <div>
               <h1 className="font-bold text-2xl mb-4">What you'll learn</h1>
@@ -236,6 +311,33 @@ const Coursedetailspage = (): JSX.Element => {
               markdown={sanitizedInstructorDescription}
             />
           </div>
+        </div>
+        <div className="fixed lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-center h-16 bg-white shadow-inner">
+          <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
+            ₹{courseDetailsData?.price}
+          </h1>
+          <div className="w-4/5">
+            <button className="w-full p-2 bg-findemypurple text-white">
+              Buy Now
+            </button>
+          </div>
+          {/* <div className="w-full flex flex-row space-x-2">
+            <button
+              onClick={() => addCourseToCart()}
+              disabled={cartCourseExists}
+              className={`${
+                cartCourseExists && "cursor-not-allowed opacity-70"
+              } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
+            >
+              {cartCourseExists ? (
+                <span className="flex flex-row text-center w-full items-center justify-center">
+                  ✓ Added to cart!
+                </span>
+              ) : (
+                <>Add to cart</>
+              )}
+            </button>
+          </div> */}
         </div>
       </div>
       <FooterComponent />

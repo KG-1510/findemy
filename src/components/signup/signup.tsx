@@ -1,3 +1,4 @@
+import jwt_decode from "jwt-decode";
 import { FooterComponent, NavbarComponent } from "../shared";
 import { AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { BiLock } from "react-icons/bi";
@@ -6,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { postSignupUser, successHandler } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../App";
 import { password_regex } from "../../utils/constants";
 
@@ -14,6 +15,7 @@ type SignUpInputs = {
   fullName: string;
   email: string;
   password: string;
+  imageurl?: string;
 };
 
 const Signuppage = (): JSX.Element => {
@@ -21,10 +23,46 @@ const Signuppage = (): JSX.Element => {
   const navigate = useNavigate();
   const { setIsUserLoggedIn } = useContext(AuthContext);
 
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+  const handleGoogleCallbackResponse = (response) => {
+    const userObject: any = jwt_decode(response.credential);
+    const payload = {
+      fullName: userObject?.name,
+      email: userObject?.email,
+      password: `${userObject.given_name}@123`,
+      imageurl: userObject?.picture,
+    };
+    handleSignup(payload);
+  };
+
+  useEffect(() => {
+    /* global google */
+    // @ts-expect-error
+    google.accounts.id.initialize({
+      client_id: clientId,
+      callback: handleGoogleCallbackResponse,
+    });
+
+    // @ts-expect-error
+    google.accounts.id.renderButton(
+      document.getElementById("googleSignInDiv"),
+      { theme: "outline", size: "large", text: "continue_with", width: "346" }
+    );
+  }, []);
+
   const handleSignup = async (data: SignUpInputs) => {
     const _res = await postSignupUser(data);
     if (_res) {
+      console.log(_res)
       setCookie("authToken", _res.token, { path: "/" });
+      const payload = {
+        _id: _res?.data?._id,
+        fullName: _res?.data?.fullName,
+        imageurl: _res?.data?.imageurl,
+        email: _res?.data?.email,
+      };
+      localStorage.setItem("userData", JSON.stringify(payload));
       setIsUserLoggedIn(true);
       successHandler(`Signed up successfully! Welcome ${data.fullName}`);
       navigate("/");
@@ -42,7 +80,7 @@ const Signuppage = (): JSX.Element => {
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
     handleSignup(data);
   };
-  
+
   return (
     <>
       <NavbarComponent />
@@ -51,6 +89,9 @@ const Signuppage = (): JSX.Element => {
           Sign up and start learning!
         </h1>
 
+        <div id="googleSignInDiv"></div>
+        <p className="my-2">or</p>
+
         <form
           className="w-full flex flex-col items-center justify-center"
           onSubmit={handleSubmit(onSubmit)}
@@ -58,6 +99,7 @@ const Signuppage = (): JSX.Element => {
           <div className="w-10/12 lg:w-3/12 relative">
             <AiOutlineUser className="absolute top-5 mx-3" />
             <input
+              aria-label="Full Name"
               className="bg-white focus:outline-none border-black border border-1 py-3 pl-10 text-base font-normal w-full my-1"
               type="text"
               placeholder="Full Name"
@@ -73,6 +115,7 @@ const Signuppage = (): JSX.Element => {
           <div className="w-10/12 lg:w-3/12 relative">
             <AiOutlineMail className="absolute top-5 mx-3" />
             <input
+              aria-label="Email"
               className="bg-white focus:outline-none border-black border border-1 py-3 pl-10 text-base font-normal w-full my-1"
               type="email"
               placeholder="Email"
@@ -88,6 +131,7 @@ const Signuppage = (): JSX.Element => {
           <div className="w-10/12 lg:w-3/12 relative">
             <BiLock className="absolute top-5 mx-3" />
             <input
+              aria-label="Password"
               className="bg-white focus:outline-none border-black border border-1 py-3 pl-10 text-base font-normal w-full my-1"
               type="password"
               placeholder="Password"

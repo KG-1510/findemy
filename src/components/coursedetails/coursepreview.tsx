@@ -12,7 +12,7 @@ import {
 } from "../../utils/api";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { clienBaseUrl } from "../../utils/constants";
 
 interface CoursepreviewProps {
@@ -32,6 +32,33 @@ const Coursepreview = ({
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
   const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
+  const [isPreviewFixed, setIsPreviewFixed] = useState<boolean>(false);
+  const [isCollidedFooter, setIsCollidedFooter] = useState<boolean>(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    window.addEventListener("scroll", listenToScroll);
+    return () => window.removeEventListener("scroll", listenToScroll);
+  }, []);
+
+  const listenToScroll = () => {
+    let heightToSetFixed = 300;
+    let heightToUnsetFixed = document.documentElement.scrollHeight - 1200;
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+
+    if (winScroll > heightToUnsetFixed) {
+      setIsCollidedFooter(true);
+    } else {
+      setIsCollidedFooter(false);
+    }
+
+    if (winScroll > heightToSetFixed && winScroll < heightToUnsetFixed) {
+      setIsPreviewFixed(true);
+    } else {
+      setIsPreviewFixed(false);
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -94,27 +121,41 @@ const Coursepreview = ({
   };
   return (
     <>
-      <div className="block lg:absolute z-40 top-28 right-10 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-4/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md">
+      <div
+        className={`block ${
+          isPreviewFixed
+            ? `lg:fixed z-50 top-20 animate-fadeIn`
+            : `lg:absolute z-40 ${
+                isCollidedFooter ? "bottom-96 mb-80" : "top-28"
+              }`
+        } right-20 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-3/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md`}
+      >
         {!coursePurchased ? (
-          <img alt="img" src={imageurl} />
+          <img alt="img" className="border border-white" src={imageurl} />
         ) : (
           <>
             <div className="video-responsive">
-              <iframe
+              {/* <iframe
                 width="475"
                 height="280"
                 src={`https://www.youtube.com/embed/HGgyd1bYWsE`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title="Embedded youtube"
-              />
+              /> */}
+              <video id="videoPlayer" controls={true}>
+                <source
+                  src={`http://localhost:3001/courses/stream/coursevideo/${courseSlug}`}
+                  type="video/mp4"
+                />
+              </video>
             </div>
           </>
         )}
         <div className="p-6 bg-primaryblack lg:bg-white">
           {!coursePurchased ? (
             <>
-              <h1 className="text-4xl font-bold mt-2 mb-4">₹{price}</h1>
+              <h1 className="text-4xl font-bold mb-4">₹{price}</h1>
               <div className="w-full flex flex-row space-x-2">
                 <button
                   onClick={() => addCourseToCart()}
@@ -158,9 +199,9 @@ const Coursepreview = ({
             </>
           )}
 
-          <div className="flex flex-col mt-6">
+          <div className="flex flex-col mt-2">
             <p>This course includes:</p>
-            <div className="flex flex-col mb-5">
+            <div className="flex flex-col mb-2">
               <div className="flex flex-row space-x-3 my-1">
                 <MdOndemandVideo size={20} />
                 <p className="text-sm font-light">5.5 hours on-demand video</p>

@@ -54,7 +54,7 @@ const Navbar = (): JSX.Element => {
     <>
       {showHamburgerMenu && (
         <>
-          <div className="absolute w-full top-16 z-50 drop-shadow-lg p-4 bg-white flex flex-col">
+          <div className="fixed w-full top-16 z-50 drop-shadow-lg p-4 bg-white flex flex-col">
             {isUserLoggedIn && (
               <>
                 <div className="flex flex-col items-center justify-center p-2 w-full border-b">
@@ -155,13 +155,13 @@ const Navbar = (): JSX.Element => {
           </div>
         </>
       )}
-      <nav className="flex space-x-4 bg-white h-[4.4rem] shadow-lg text-center justify-between items-center px-4">
-        <button
+      <nav className="sticky top-0 z-50 flex space-x-4 bg-white h-[4.4rem] shadow-lg text-center justify-between items-center px-4">
+        <span
           className="flex md:hidden h-10 w-10 focus:outline-none items-center justify-center"
           onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
         >
           <GiHamburgerMenu className="h-6 w-6" />
-        </button>
+        </span>
         <Link to={"/"}>
           <h2 className="text-3xl font-bold hover:cursor-pointer">
             F<span className="text-findemypurple">i</span>ndemy
@@ -181,19 +181,19 @@ const Navbar = (): JSX.Element => {
           />
         </form>
         <div className="flex">
-          <button
+          <span
             onClick={() => setShowSearchBarMobile(true)}
             className="w-10 h-10 flex md:hidden items-center justify-center hover:bg-[#F5F5F5]"
           >
             <AiOutlineSearch className="h-5 w-5" />
-          </button>
+          </span>
 
           {isUserLoggedIn && (
             <>
               <Link to={"/mylearnings"}>
-                <button className="hidden md:flex h-10 px-2 items-center text-sm font-light mx-2 justify-center hover:bg-[#F5F5F5]">
+                <span className="hidden md:flex h-10 px-2 items-center text-sm font-light mx-2 justify-center hover:bg-[#F5F5F5]">
                   My learnings
-                </button>
+                </span>
               </Link>
             </>
           )}
@@ -201,14 +201,14 @@ const Navbar = (): JSX.Element => {
           {isUserLoggedIn && (
             <>
               <Link to={"/cart"}>
-                <button className="w-10 h-10 relative flex items-center justify-center hover:bg-[#F5F5F5]">
-                  <BiCartAlt className="h-5 w-5" />
+                <span className="w-10 h-10 relative flex items-center justify-center hover:bg-[#F5F5F5]">
+                  <BiCartAlt aria-label="cart" className="h-5 w-5" />
                   {cartCount !== 0 && (
                     <span className="absolute top-6 right-0 bg-findemypurple rounded-full text-xs font-light text-white h-4 w-4">
                       {cartCount}
                     </span>
                   )}
-                </button>
+                </span>
               </Link>
             </>
           )}
