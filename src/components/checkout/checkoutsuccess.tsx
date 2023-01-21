@@ -48,6 +48,10 @@ const Checkoutsuccesspage = (): JSX.Element => {
         <p className="text-base font-light my-3">
           Embark on your journey of learning!
         </p>
+        <p className="text-lg text-center font-light my-3">
+          📧 An Email for course purchase confirmation has been sent to your
+          registered Email ID!
+        </p>
         <p>Here's what you purchased so far!</p>
         <div className="flex flex-col w-full lg:w-2/4">
           {purchasedCardsLoaded ? (

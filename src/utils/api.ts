@@ -130,7 +130,9 @@ export const patchUserCart = async (
 export const postAddCart = async (
   authToken: string,
   userId: string,
-  courseSlug: string
+  courseSlug: string,
+  isGiftedCourse?: boolean,
+  recipientEmail?: string
 ) => {
   try {
     if (authToken) {
@@ -143,6 +145,8 @@ export const postAddCart = async (
         data: {
           userId,
           courseSlug,
+          isGiftedCourse,
+          recipientEmail,
         },
       });
       return _res.data;
@@ -181,6 +185,32 @@ export const postCourseEnroll = async (
   }
 };
 
+export const postGiftedCourseEnroll = async (
+  authToken: string,
+  userId: string,
+  coursesPurchased: any,
+  recipientEmail: string
+) => {
+  try {
+    const _res = await axios({
+      method: "POST",
+      url: `${baseUrl}/user/giftedcourseenroll`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: {
+        userId,
+        coursesPurchased,
+        recipientEmail,
+      },
+    });
+    return _res.data;
+  } catch (err) {
+    errorHandler(err);
+    return false;
+  }
+};
+
 export const postRazorpayOrderId = async (
   authToken: string,
   amount: number,
@@ -196,6 +226,64 @@ export const postRazorpayOrderId = async (
       data: {
         amount,
         paymentMethod,
+      },
+    });
+    return _res.data;
+  } catch (err) {
+    errorHandler(err);
+    return false;
+  }
+};
+
+export const postPurchaseSuccessMail = async (
+  authToken: string,
+  fullName: string,
+  email: string,
+  coursesEnrolled: any
+) => {
+  try {
+    const _res = await axios({
+      method: "POST",
+      url: `${baseUrl}/courses/sendmail/purchasesuccess`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: {
+        fullName,
+        email,
+        coursesEnrolled,
+      },
+    });
+    return _res.data;
+  } catch (err) {
+    errorHandler(err);
+    return false;
+  }
+};
+
+export const postGiftSuccessMail = async (
+  authToken: string,
+  senderName: string,
+  senderEmail: string,
+  recipientFullName: string,
+  recipientEmail: string,
+  coursesEnrolled: any,
+  message?: string,
+) => {
+  try {
+    const _res = await axios({
+      method: "POST",
+      url: `${baseUrl}/courses/sendmail/giftingsuccess`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: {
+        senderName,
+        senderEmail,
+        recipientFullName,
+        recipientEmail,
+        coursesEnrolled,
+        message
       },
     });
     return _res.data;

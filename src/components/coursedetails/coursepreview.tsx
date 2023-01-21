@@ -1,4 +1,8 @@
-import { AiOutlineHeart, AiOutlineTrophy } from "react-icons/ai";
+import {
+  AiFillPlayCircle,
+  AiOutlineHeart,
+  AiOutlineTrophy,
+} from "react-icons/ai";
 import { MdOndemandVideo } from "react-icons/md";
 import { HiOutlineFolderDownload } from "react-icons/hi";
 import { IoIosInfinite } from "react-icons/io";
@@ -12,8 +16,8 @@ import {
 } from "../../utils/api";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { clienBaseUrl } from "../../utils/constants";
+import { Link, useNavigate } from "react-router-dom";
+import { clientBaseUrl, streamable_courses } from "../../utils/constants";
 
 interface CoursepreviewProps {
   //   onCardClick: () => void;
@@ -22,12 +26,14 @@ interface CoursepreviewProps {
   price: number;
   imageurl: string;
   courseSlug: string;
+  isGiftedCourse?: string;
 }
 
 const Coursepreview = ({
   price,
   imageurl,
   courseSlug,
+  isGiftedCourse,
 }: CoursepreviewProps): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
@@ -40,6 +46,8 @@ const Coursepreview = ({
     window.addEventListener("scroll", listenToScroll);
     return () => window.removeEventListener("scroll", listenToScroll);
   }, []);
+
+  const backendBaseUrl: string = process.env.REACT_APP_BACKEND_BASE_URL;
 
   const listenToScroll = () => {
     let heightToSetFixed = 300;
@@ -99,6 +107,7 @@ const Coursepreview = ({
       if (_res) {
         successHandler("Added to cart successfully! 🎉");
         courseExistsInCart(_data?._id);
+        return true;
       }
     } else {
       successHandler("Hold on, login to continue!");
@@ -107,8 +116,10 @@ const Coursepreview = ({
   };
 
   const handleBuyNow = async () => {
-    addCourseToCart();
-    navigate("/checkout");
+    const cartAddSuccess = await addCourseToCart();
+    if (cartAddSuccess) {
+      navigate("/checkout");
+    }
   };
 
   const copyToClipBoard = async (copyMe: string) => {
@@ -131,24 +142,35 @@ const Coursepreview = ({
         } right-20 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-3/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md`}
       >
         {!coursePurchased ? (
-          <img alt="img" className="border border-white" src={imageurl} />
+          <img
+            alt="img"
+            className="border border-white w-full"
+            src={imageurl}
+          />
         ) : (
           <>
             <div className="video-responsive">
-              {/* <iframe
-                width="475"
-                height="280"
-                src={`https://www.youtube.com/embed/HGgyd1bYWsE`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title="Embedded youtube"
-              /> */}
-              <video id="videoPlayer" controls={true}>
-                <source
-                  src={`http://localhost:3001/courses/stream/coursevideo/${courseSlug}`}
-                  type="video/mp4"
-                />
-              </video>
+              {streamable_courses.includes(courseSlug) ? (
+                <>
+                  <video id="videoPlayer" controls={true}>
+                    <source
+                      src={`${backendBaseUrl}/courses/stream/coursevideo/${courseSlug}`}
+                      type="video/mp4"
+                    />
+                  </video>
+                </>
+              ) : (
+                <>
+                  <iframe
+                    width="475"
+                    height="280"
+                    src={`https://www.youtube.com/embed/HGgyd1bYWsE`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="Embedded YouTube iFrame for sample video"
+                  />
+                </>
+              )}
             </div>
           </>
         )}
@@ -193,9 +215,25 @@ const Coursepreview = ({
             </>
           ) : (
             <>
-              <p className="text-center">
-                🎉 You have purchased this course, start learning!
-              </p>
+              <div>
+                {isGiftedCourse ? (
+                  <p className="text-center">
+                    🎁 You have been gifted this course, start learning!
+                  </p>
+                ) : (
+                  <p className="text-center">
+                    🎉 You have purchased this course, start learning!
+                  </p>
+                )}
+                <div className="flex items-center justify-center w-full">
+                  <Link to={`/streamcourse/${courseSlug}`}>
+                    <button className="flex flex-row items-center p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
+                      <AiFillPlayCircle className="mx-1" size={20} />
+                      Start streaming!
+                    </button>
+                  </Link>
+                </div>
+              </div>
             </>
           )}
 
@@ -227,19 +265,43 @@ const Coursepreview = ({
           <div className="flex flex-row w-full justify-around">
             <p
               onClick={() =>
-                copyToClipBoard(`${clienBaseUrl}/coursedetails/${courseSlug}`)
+                copyToClipBoard(`${clientBaseUrl}/coursedetails/${courseSlug}`)
               }
               className="underline hover:text-findemypurple cursor-pointer"
             >
               Share
             </p>
-            <p className="underline hover:text-findemypurple cursor-pointer">
-              Gift this course
-            </p>
+            <Link to={`/giftcourse/${courseSlug}`}>
+              <p className="underline hover:text-findemypurple cursor-pointer">
+                Gift this course
+              </p>
+            </Link>
             <p className="underline hover:text-findemypurple cursor-pointer">
               Apply coupon
             </p>
           </div>
+        </div>
+      </div>
+      <div className="fixed lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-between h-16 bg-white shadow-inner">
+        <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
+          ₹{price}
+        </h1>
+        <div className="w-full flex flex-row justify-end space-x-2">
+          <button
+            onClick={() => addCourseToCart()}
+            disabled={cartCourseExists}
+            className={`${
+              cartCourseExists && "cursor-not-allowed opacity-70"
+            } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
+          >
+            {cartCourseExists ? (
+              <span className="flex flex-row text-center w-full items-center justify-center">
+                ✓ Added to cart!
+              </span>
+            ) : (
+              <>Add to cart</>
+            )}
+          </button>
         </div>
       </div>
     </>

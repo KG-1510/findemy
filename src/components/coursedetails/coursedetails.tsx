@@ -14,9 +14,6 @@ import MarkdownView from "react-showdown";
 import { sanitizedHtmlText, truncateText } from "../../utils/functions";
 
 interface CoursedetailsProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
   id: number;
   imageurl: string;
   title: string;
@@ -35,6 +32,7 @@ interface CoursedetailsProps {
   instructorProfession: string;
   instructorImg: string;
   instructorDescription: string;
+  isGiftedCourse?: string;
 }
 
 const Coursedetailspage = (): JSX.Element => {
@@ -138,6 +136,7 @@ const Coursedetailspage = (): JSX.Element => {
           price={courseDetailsData?.price}
           imageurl={courseDetailsData?.imageurl}
           courseSlug={courseDetailsData?.courseSlug}
+          isGiftedCourse={courseDetailsData?.isGiftedCourse}
         />
         <div className="bg-primaryblack w-full text-white">
           <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
@@ -311,33 +310,6 @@ const Coursedetailspage = (): JSX.Element => {
               markdown={sanitizedInstructorDescription}
             />
           </div>
-        </div>
-        <div className="fixed lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-center h-16 bg-white shadow-inner">
-          <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
-            ₹{courseDetailsData?.price}
-          </h1>
-          <div className="w-4/5">
-            <button className="w-full p-2 bg-findemypurple text-white">
-              Buy Now
-            </button>
-          </div>
-          {/* <div className="w-full flex flex-row space-x-2">
-            <button
-              onClick={() => addCourseToCart()}
-              disabled={cartCourseExists}
-              className={`${
-                cartCourseExists && "cursor-not-allowed opacity-70"
-              } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
-            >
-              {cartCourseExists ? (
-                <span className="flex flex-row text-center w-full items-center justify-center">
-                  ✓ Added to cart!
-                </span>
-              ) : (
-                <>Add to cart</>
-              )}
-            </button>
-          </div> */}
         </div>
       </div>
       <FooterComponent />

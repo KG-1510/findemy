@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartpageComponent } from "./components/cart";
 import {
+  Checkoutgiftingsuccesspage,
   CheckoutpageComponent,
   Checkoutsuccesspage,
 } from "./components/checkout";
@@ -13,8 +14,10 @@ import { SearchpageComponent } from "./components/search";
 import { SignuppageComponent } from "./components/signup";
 import { MylearningsComponent } from "./components/mylearnings";
 import { NotfoundComponent } from "./components/shared";
+import { StreamcourseComponent } from "./components/streamcourse";
 import ProtectedRoute from "./protectedroutes";
 import "react-toastify/dist/ReactToastify.css";
+import { GiftcourseComponent } from "./components/giftcourse";
 
 export const AuthContext = createContext<any>(null);
 
@@ -50,8 +53,20 @@ function App() {
                 element={<Checkoutsuccesspage />}
               ></Route>
               <Route
+                path="/giftingcheckoutsuccess"
+                element={<Checkoutgiftingsuccesspage />}
+              ></Route>
+              <Route
                 path="/mylearnings"
                 element={<MylearningsComponent />}
+              ></Route>
+              <Route
+                path="/streamcourse/:courseSlug"
+                element={<StreamcourseComponent />}
+              ></Route>
+              <Route
+                path="/giftcourse/:courseSlug"
+                element={<GiftcourseComponent />}
               ></Route>
             </Route>
             <Route path="*" element={<NotfoundComponent />} />

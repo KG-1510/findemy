@@ -1,13 +1,22 @@
 import jwt_decode from "jwt-decode";
-import { FooterComponent, NavbarComponent } from "../shared";
-import { AiOutlineMail, AiOutlineUser } from "react-icons/ai";
+import {
+  FooterComponent,
+  NavbarComponent,
+  SpinnerloaderComponent,
+} from "../shared";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineMail,
+  AiOutlineUser,
+} from "react-icons/ai";
 import { BiLock } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { postSignupUser, successHandler } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../App";
 import { password_regex } from "../../utils/constants";
 
@@ -20,10 +29,12 @@ type SignUpInputs = {
 
 const Signuppage = (): JSX.Element => {
   const [_, setCookie] = useCookies(["authToken"]);
+  const [isSubmittingSignup, setIsSubmittingSignup] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setIsUserLoggedIn } = useContext(AuthContext);
 
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId: string = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const handleGoogleCallbackResponse = (response) => {
     const userObject: any = jwt_decode(response.credential);
@@ -54,7 +65,7 @@ const Signuppage = (): JSX.Element => {
   const handleSignup = async (data: SignUpInputs) => {
     const _res = await postSignupUser(data);
     if (_res) {
-      console.log(_res)
+      console.log(_res);
       setCookie("authToken", _res.token, { path: "/" });
       const payload = {
         _id: _res?.data?._id,
@@ -65,11 +76,10 @@ const Signuppage = (): JSX.Element => {
       localStorage.setItem("userData", JSON.stringify(payload));
       setIsUserLoggedIn(true);
       successHandler(`Signed up successfully! Welcome ${data.fullName}`);
+      setIsSubmittingSignup(false);
       navigate("/");
-
-      // setCourseCardsData(_res.data);
-      // setCourseDataLoaded(true);
     }
+    setIsSubmittingSignup(false);
   };
 
   const {
@@ -78,6 +88,7 @@ const Signuppage = (): JSX.Element => {
     formState: { errors },
   } = useForm<SignUpInputs>();
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
+    setIsSubmittingSignup(true);
     handleSignup(data);
   };
 
@@ -133,7 +144,7 @@ const Signuppage = (): JSX.Element => {
             <input
               aria-label="Password"
               className="bg-white focus:outline-none border-black border border-1 py-3 pl-10 text-base font-normal w-full my-1"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               {...register("password", {
                 required: true,
@@ -148,12 +159,39 @@ const Signuppage = (): JSX.Element => {
                 characters
               </span>
             )}
+            {!showPassword ? (
+              <span
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPassword(true);
+                }}
+              >
+                <AiOutlineEye className="absolute top-5 right-4" size={20} />
+              </span>
+            ) : (
+              <span
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPassword(false);
+                }}
+              >
+                <AiOutlineEyeInvisible
+                  className="absolute top-5 right-4"
+                  size={20}
+                />
+              </span>
+            )}
           </div>
           <button
+            disabled={isSubmittingSignup}
             type="submit"
-            className="bg-findemypurple hover:opacity-90 text-white border border-1 py-3 w-10/12 lg:w-3/12 my-1"
+            className={`${
+              isSubmittingSignup ? "opacity-25 cursor-wait" : "hover:opacity-90"
+            } bg-findemypurple text-white border border-1 py-3 w-10/12 lg:w-3/12 my-1`}
           >
-            Sign Up
+            {isSubmittingSignup ? <SpinnerloaderComponent /> : "Sign Up"}
           </button>
         </form>
         <p className="text-sm font-normal text-gray-500 pb-4 border-b-2 mt-3 px-6 text-center">

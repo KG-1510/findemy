@@ -163,7 +163,7 @@ const Navbar = (): JSX.Element => {
           <GiHamburgerMenu className="h-6 w-6" />
         </span>
         <Link to={"/"}>
-          <h2 className="text-3xl font-bold hover:cursor-pointer">
+          <h2 className="text-3xl focus:outline-none font-bold hover:cursor-pointer">
             F<span className="text-findemypurple">i</span>ndemy
           </h2>
         </Link>

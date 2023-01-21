@@ -7,6 +7,9 @@ import {
   errorHandler,
   getUserCart,
   postCourseEnroll,
+  postGiftedCourseEnroll,
+  postGiftSuccessMail,
+  postPurchaseSuccessMail,
   postRazorpayOrderId,
   successHandler,
 } from "../../utils/api";
@@ -137,7 +140,7 @@ const Checkoutpage = (): JSX.Element => {
       alert("Error loading Razorpay SDK! Please try again later!");
       return;
     }
-    const KEY_ID = process.env.REACT_APP_RAZORPAY_KEY_ID;
+    const KEY_ID: string = process.env.REACT_APP_RAZORPAY_KEY_ID;
     const options = {
       key: KEY_ID,
       amount: cartNewPrice,
@@ -161,22 +164,66 @@ const Checkoutpage = (): JSX.Element => {
             },
             data: response,
           });
-          if (_res) {
+          if (_res?.data?.success) {
             const _data = JSON.parse(localStorage.getItem("userData"));
-            console.log("carttt", cartCardsData);
-            const res = await postCourseEnroll(
-              cookie?.authToken,
-              _data?._id,
-              cartCardsData
+            const _giftCoursedata = JSON.parse(
+              localStorage.getItem("giftCourseData")
             );
-            if (res) {
-              console.log(res);
-              successHandler(_res?.data?.message);
-              navigate("/checkoutsuccess");
+            console.log(_giftCoursedata);
+            if (_giftCoursedata) {
+              const _resGift = await postGiftedCourseEnroll(
+                cookie?.authToken,
+                _data?._id,
+                cartCardsData,
+                _giftCoursedata?.recipientEmail
+              );
+              successHandler(_resGift?.data?.message);
+              await postGiftSuccessMail(
+                cookie?.authToken,
+                _data?.fullName,
+                _data?.email,
+                _giftCoursedata?.recipientName,
+                _giftCoursedata?.recipientEmail,
+                cartCardsData,
+                _giftCoursedata?.message
+              );
+              localStorage.removeItem("giftCourseData");
+              navigate("/giftingcheckoutsuccess");
+            } else {
+              const res = await postCourseEnroll(
+                cookie?.authToken,
+                _data?._id,
+                cartCardsData
+              );
+              if (res) {
+                console.log(res);
+                successHandler(_res?.data?.message);
+                await postPurchaseSuccessMail(
+                  cookie?.authToken,
+                  _data?.fullName,
+                  _data?.email,
+                  cartCardsData
+                );
+                navigate("/checkoutsuccess");
+              }
             }
           }
         } catch (error) {
+          {
+            toast.error("Payment failed, please retry after sometime!", {
+              toastId: "unauthorized",
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              className: "font-DMSans",
+            });
+          }
           console.log(error);
+          navigate("/cart")
         }
       },
       theme: {
@@ -614,9 +661,16 @@ const Checkoutpage = (): JSX.Element => {
                             src={item?.imageurl}
                             alt={item?.title}
                           />
-                          <h1 className="p-2 hover:text-findemypurple">
-                            {item?.title}
-                          </h1>
+                          <div className="flex flex-col">
+                            <h1 className="p-2 hover:text-findemypurple">
+                              {item?.title}
+                            </h1>
+                            {item?.isGiftedCourse && (
+                              <p className="text-xs font-light px-2">
+                                🎁 You are gifting this course!
+                              </p>
+                            )}
+                          </div>
                           <div className="flex flex-col items-center justify-center">
                             <p className="text-findemypurple">₹{item?.price}</p>
                             <p className="line-through text-sm font-light">

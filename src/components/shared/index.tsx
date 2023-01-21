@@ -4,3 +4,4 @@ export { default as CoursecardComponent } from "./coursecard";
 export { NextArrow } from "./arrows";
 export { PrevArrow } from "./arrows";
 export { default as NotfoundComponent } from "./notfound";
+export { default as SpinnerloaderComponent } from "./spinnerloader";

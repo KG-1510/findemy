@@ -1,8 +1,16 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { Link } from "react-router-dom";
-import { FooterComponent, NavbarComponent } from "../shared";
-import { AiOutlineMail } from "react-icons/ai";
+import {
+  FooterComponent,
+  NavbarComponent,
+  SpinnerloaderComponent,
+} from "../shared";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlineMail,
+} from "react-icons/ai";
 import { BiLock } from "react-icons/bi";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -17,13 +25,15 @@ type LogInInputs = {
 
 const Loginpage = (): JSX.Element => {
   const [_, setCookie] = useCookies(["authToken"]);
+  const [isSubmittingLogin, setIsSubmittingLogin] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
   const { setIsUserLoggedIn } = useContext(AuthContext);
 
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId: string = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   const handleGoogleCallbackResponse = (response) => {
-    const userObject :any = jwt_decode(response.credential);
+    const userObject: any = jwt_decode(response.credential);
     const payload = {
       email: userObject?.email,
       password: `${userObject.given_name}@123`,
@@ -59,8 +69,10 @@ const Loginpage = (): JSX.Element => {
       };
       localStorage.setItem("userData", JSON.stringify(payload));
       successHandler(`You're logged in! Welcome ${_res.data.fullName}`);
+      setIsSubmittingLogin(false);
       navigate("/");
     }
+    setIsSubmittingLogin(false);
   };
 
   const {
@@ -69,6 +81,7 @@ const Loginpage = (): JSX.Element => {
     formState: { errors },
   } = useForm<LogInInputs>();
   const onSubmit: SubmitHandler<LogInInputs> = (data) => {
+    setIsSubmittingLogin(true);
     handleLogin(data);
   };
   return (
@@ -127,7 +140,7 @@ const Loginpage = (): JSX.Element => {
             <input
               aria-label="Password"
               className="bg-white focus:outline-none border-black border border-1 py-3 pl-10 text-base font-normal w-full my-1"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               {...register("password", { required: true })}
             />
@@ -136,12 +149,39 @@ const Loginpage = (): JSX.Element => {
                 This field is required!
               </span>
             )}
+            {!showPassword ? (
+              <span
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPassword(true);
+                }}
+              >
+                <AiOutlineEye className="absolute top-5 right-4" size={20} />
+              </span>
+            ) : (
+              <span
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPassword(false);
+                }}
+              >
+                <AiOutlineEyeInvisible
+                  className="absolute top-5 right-4"
+                  size={20}
+                />
+              </span>
+            )}
           </div>
           <button
+            disabled={isSubmittingLogin}
             type="submit"
-            className="bg-findemypurple hover:opacity-90 text-white border border-1 py-3 w-10/12 lg:w-3/12 my-1"
+            className={`${
+              isSubmittingLogin ? "opacity-25 cursor-wait" : "hover:opacity-90"
+            } bg-findemypurple text-white border border-1 py-3 w-10/12 lg:w-3/12 my-1`}
           >
-            Log In
+            {isSubmittingLogin ? <SpinnerloaderComponent /> : "Log In"}
           </button>
         </form>
         <p className="font-normal text-base mt-4">
