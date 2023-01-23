@@ -1,5 +1,5 @@
 import StarRatings from "react-star-ratings";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { VscGlobe } from "react-icons/vsc";
 
@@ -37,6 +37,7 @@ interface CoursedetailsProps {
 
 const Coursedetailspage = (): JSX.Element => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [courseDetailsData, setCourseDetailsData] =
     useState<CoursedetailsProps>();
@@ -67,6 +68,8 @@ const Coursedetailspage = (): JSX.Element => {
     const _res = await getCourseDetails(params.courseSlug);
     if (_res) {
       setCourseDetailsData(_res.data);
+    } else {
+      navigate("*");
     }
   };
 
@@ -142,12 +145,12 @@ const Coursedetailspage = (): JSX.Element => {
           <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
             <div className="flex flex-row space-x-3 my-3">
               <Link to={`/search?query=${courseDetailsData?.category}`}>
-                <span className="text-findemypurple hover:opacity-80 cursor-pointer font-light mx-1">
+                <span className="text-findemypurple text-sm lg:text-base flex items-center justify-center hover:opacity-80 cursor-pointer font-light mx-1">
                   {courseDetailsData?.category}{" "}
                 </span>
               </Link>
               <span className="text-white font-light mx-1">{">"}</span>{" "}
-              <span className="text-findemypurple hover:opacity-80 cursor-pointer font-light mx-1">
+              <span className="text-findemypurple text-sm lg:text-base flex items-center justify-center hover:opacity-80 cursor-pointer font-light mx-1">
                 {courseDetailsData?.title}
               </span>
             </div>
@@ -156,7 +159,7 @@ const Coursedetailspage = (): JSX.Element => {
               <MarkdownView
                 className="text-lg font-normal h-14 card-title"
                 style={{ whiteSpace: "pre-line" }}
-                markdown={truncateText(sanitizedCourseDescription, 100, 100)}
+                markdown={sanitizedCourseDescription}
               />
             )}
 
@@ -227,7 +230,7 @@ const Coursedetailspage = (): JSX.Element => {
             <div>
               <h1 className="font-bold text-2xl mb-4">What you'll learn</h1>
             </div>
-            <ul className="grid grid-cols-2 gap-3">
+            <ul className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               {courseDetailsData?.learningOutcomes.map((item, i) => {
                 return (
                   <li className="text-gray-500 font-light text-base" key={i}>
@@ -281,7 +284,7 @@ const Coursedetailspage = (): JSX.Element => {
             </p>
             <div className="flex flex-row my-3">
               <img
-                className="w-32 h-32 rounded-full"
+                className="w-32 h-32 rounded-full border"
                 src={courseDetailsData?.instructorImg}
                 alt={courseDetailsData?.instructorName}
               />

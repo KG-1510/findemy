@@ -144,7 +144,9 @@ const Coursepreview = ({
         {!coursePurchased ? (
           <img
             alt="img"
-            className="border border-white w-full"
+            className={`${
+              isPreviewFixed || isCollidedFooter ? "hidden" : ""
+            } border border-white w-full`}
             src={imageurl}
           />
         ) : (

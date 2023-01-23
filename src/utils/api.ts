@@ -299,18 +299,10 @@ export const errorHandler = (error?: AxiosError | any) => {
 
   if (error.status !== 500) {
     errMessage = error.response.data.message;
-
-    // INFO: Only in protected routes, if authToken/JWT is malformed or cookie deleted, then destroyCookie and send user to /login
-    // if (
-    //   error.response.status === 401 &&
-    //   authRoutes.includes(window.location.pathname)
-    // ) {
-    //   destroyCookie(null, "authToken");
-    //   window.location.replace("/login");
-    // }
   }
 
   toast.error(errMessage, {
+    toastId: errMessage,
     position: "top-center",
     autoClose: 5000,
     hideProgressBar: false,

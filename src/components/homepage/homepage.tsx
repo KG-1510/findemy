@@ -8,18 +8,31 @@ import {
   PrevArrow,
   FooterComponent,
 } from "../shared";
+import { AuthContext } from "../../App";
 import { CategorytopicsComponent, Coursecardloader } from ".";
 
-import { useEffect, useState } from "react";
-import { getCourses } from "../../utils/api";
+import { useContext, useEffect, useState } from "react";
+import { getCourses, getUserProfile } from "../../utils/api";
+import { useCookies } from "react-cookie";
 
 const Homepage = (): JSX.Element => {
+  const [cookie, _] = useCookies(["authToken"]);
   const [courseCardsData, setCourseCardsData] = useState<any>();
   const [courseDataLoaded, setCourseDataLoaded] = useState<boolean>(false);
+  const [purchasedCardsData, setPurchasedCardsData] = useState<any>([]);
+  const [purchasedCardsLoaded, setPurchasedCardsLoaded] =
+    useState<boolean>(false);
+  const [userData, setUserData] = useState<any>({});
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  const { isUserLoggedIn } = useContext(AuthContext);
+
+  const fetchPurchasedItems = async (authToken: string, userId: string) => {
+    const _res = await getUserProfile(authToken, userId);
+    if (_res) {
+      setPurchasedCardsData(_res?.data?.coursesEnrolled);
+      setPurchasedCardsLoaded(true);
+    }
+  };
 
   const fetchCourses = async () => {
     const _res = await getCourses();
@@ -28,6 +41,15 @@ const Homepage = (): JSX.Element => {
       setCourseDataLoaded(true);
     }
   };
+
+  useEffect(() => {
+    fetchCourses();
+    if (cookie?.authToken) {
+      const _data = JSON.parse(localStorage.getItem("userData"));
+      setUserData(_data);
+      fetchPurchasedItems(cookie?.authToken, _data?._id);
+    }
+  }, []);
 
   var settings = {
     dots: false,
@@ -112,6 +134,52 @@ const Homepage = (): JSX.Element => {
           </>
         )}
       </div>
+
+      {isUserLoggedIn && (
+        <>
+          <div className="py-10 px-4 lg:px-44 font-bold text-2xl">
+            <h1 className="mb-4">Let's start learning, {userData?.fullName}!</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+              {purchasedCardsLoaded ? (
+                <>
+                  {purchasedCardsData?.map((data) => {
+                    return (
+                      <>
+                        <div key={data?._id} className="px-2">
+                          <CoursecardComponent
+                            id={data?._id}
+                            imageurl={data?.imageurl}
+                            title={data?.title}
+                            courseSlug={data?.courseSlug}
+                            instructorName={data?.instructorName}
+                            rating={data?.rating}
+                            votes={data?.votes}
+                            category={data?.category}
+                            tag={data?.tag}
+                            level={data?.level}
+                          />
+                        </div>
+                      </>
+                    );
+                  })}
+                </>
+              ) : (
+                <>
+                  <div className="hidden lg:flex flex-row space-x-3">
+                    <Coursecardloader />
+                    <Coursecardloader />
+                    <Coursecardloader />
+                    <Coursecardloader />
+                  </div>
+                  <div className="flex flex-col items-center justify-center mx-auto lg:hidden">
+                    <Coursecardloader />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
       <CategorytopicsComponent />
       <FooterComponent />
     </>
