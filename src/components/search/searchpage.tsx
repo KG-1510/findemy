@@ -1,5 +1,9 @@
 import { SearchcardComponent, Searchcardloader } from ".";
-import { FooterComponent, NavbarComponent } from "../shared";
+import {
+  FooterComponent,
+  NavbarComponent,
+  SpinnerloaderComponent,
+} from "../shared";
 
 import { useEffect, useMemo, useState } from "react";
 import { getSearchedCourses } from "../../utils/api";
@@ -48,7 +52,7 @@ const Searchpage = (): JSX.Element => {
   const fetchCourses = async () => {
     const _res = await getSearchedCourses(searchString);
     if (_res) {
-      console.log(_res)
+      console.log(_res);
       setSearchCardData(_res.data);
       setSearchCardDataCopy(_res.data);
       setResultLength(_res.data.length);
@@ -84,11 +88,17 @@ const Searchpage = (): JSX.Element => {
     <>
       <NavbarComponent />
       <div className="py-10 px-4 lg:px-44 font-bold text-2xl">
-        <h1 className="mb-4">
-          {resultLength} result{resultLength > 1 && "s"} for "{searchString}"
-        </h1>
+        {searchDataLoaded ? (
+          <h1 className="mb-4">
+            {resultLength} result{resultLength > 1 && "s"} for "{searchString}"
+          </h1>
+        ) : (
+          <div className="h-16 flex items-center justify-center ">
+            <SpinnerloaderComponent />
+          </div>
+        )}
         {appliedFilters.length > 0 && (
-          <p className="text-base font-light">
+          <p className="text-base font-light animate-fadeIn">
             {searchCardData?.length} results for filter - Level:{" "}
             {appliedFilters?.map((item) => {
               return (
@@ -194,7 +204,7 @@ const Searchpage = (): JSX.Element => {
             {searchCardData?.length > 0 && searchDataLoaded ? (
               searchCardData?.map((data) => {
                 return (
-                  <div key={data?.id} className="px-2">
+                  <div key={data?.id} className="px-2 animate-fadeIn">
                     <SearchcardComponent
                       id={data?.id}
                       imageurl={data?.imageurl}

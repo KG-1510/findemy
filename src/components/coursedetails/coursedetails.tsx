@@ -147,7 +147,7 @@ const Coursedetailspage = (): JSX.Element => {
         />
         <div className="bg-primaryblack w-full text-white">
           {courseDetailsData ? (
-            <div className="py-10 px-4 lg:px-32 w-full lg:w-8/12">
+            <div className="animate-fadeIn py-10 px-4 lg:px-32 w-full lg:w-8/12">
               <div className="flex flex-row space-x-3 my-3">
                 <Link to={`/search?query=${courseDetailsData?.category}`}>
                   <span className="text-findemypurple text-sm lg:text-base flex items-center justify-center hover:opacity-80 cursor-pointer font-light mx-1">

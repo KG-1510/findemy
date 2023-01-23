@@ -63,7 +63,7 @@ const Cartpage = (): JSX.Element => {
               <>
                 {cartCardsData?.map((data) => {
                   return (
-                    <div key={data.id} className="px-2">
+                    <div key={data.id} className="px-2 animate-fadeIn">
                       <CartcardComponent
                         id={data?.id}
                         imageurl={data?.imageurl}

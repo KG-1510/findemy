@@ -62,11 +62,11 @@ const Checkoutsuccesspage = (): JSX.Element => {
                     <Link to={`/coursedetails/${item?.courseSlug}`}>
                       <div className="border flex flex-row w-full p-2 my-1">
                         <img
-                          className="w-3/12"
+                          className="w-5/12 lg:w-3/12"
                           src={item?.imageurl}
                           alt={item?.title}
                         />
-                        <h1 className="p-2 hover:text-findemypurple w-full">
+                        <h1 className="p-2 hover:text-findemypurple text-sm lg:text-base w-full">
                           {item?.title}
                         </h1>
                         <div className="flex flex-col items-center justify-center">

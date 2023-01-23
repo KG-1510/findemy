@@ -164,6 +164,7 @@ const Checkoutpage = (): JSX.Element => {
             },
             data: response,
           });
+          successHandler("Please wait while we are verifying your payment")
           if (_res?.data?.success) {
             const _data = JSON.parse(localStorage.getItem("userData"));
             const _giftCoursedata = JSON.parse(
@@ -343,18 +344,39 @@ const Checkoutpage = (): JSX.Element => {
                           />
                           Credit / Debit Card
                         </span>
-                        <img
-                          width={170}
-                          src="cardsAccepted.png"
-                          alt="cards-accepted"
-                          className="hidden lg:block rounded-sm border border-black"
-                        />
+                        <span className="flex flex-row items-center justify-center space-x-1">
+                          <img
+                            src="https://www.udemy.com/staticx/udemy/images/v9/card-visa.svg"
+                            alt="VISA"
+                            className="bg-white rounded border w-10 lg:w-12 h-5 lg:h-7"
+                          />
+                          <img
+                            src="https://www.udemy.com/staticx/udemy/images/v9/card-mastercard.svg"
+                            alt="MasterCard"
+                            className="bg-white rounded border w-10 lg:w-12 h-5 lg:h-7"
+                          />
+                          <img
+                            src="https://www.udemy.com/staticx/udemy/images/v9/card-amex.svg"
+                            alt="AMEX"
+                            className="bg-white rounded border w-10 lg:w-12 h-5 lg:h-7"
+                          />
+                          <img
+                            src="https://www.udemy.com/staticx/udemy/images/v9/card-dinersclub.svg"
+                            alt="Diners Club"
+                            className="bg-white rounded border w-10 lg:w-12 h-5 lg:h-7"
+                          />
+                          <img
+                            src="	https://www.udemy.com/staticx/udemy/images/v9/card-rupay.svg"
+                            alt="Rupay"
+                            className="bg-white rounded border w-10 lg:w-12 h-5 lg:h-7"
+                          />
+                        </span>
                       </div>
                     </label>
                   </div>
                   {selectedPaymentMode === "card" && (
                     <form
-                      className="w-full flex flex-col items-center justify-center"
+                      className="w-full flex flex-col items-center justify-center animate-fadeIn"
                       onSubmit={handleSubmit(onSubmit)}
                     >
                       <div className="overflow-hidden bg-white leading-normal p-4 w-full">
@@ -499,7 +521,7 @@ const Checkoutpage = (): JSX.Element => {
                     </label>
                   </div>
                   {selectedPaymentMode === "upi" && (
-                    <div className="overflow-hidden bg-white leading-normal p-4">
+                    <div className="overflow-hidden bg-white leading-normal p-4 animate-fadeIn">
                       <div className="w-full">
                         <p className="font-normal text-base">
                           Enter your UPI ID / VPA and make payment on your UPI
@@ -569,7 +591,7 @@ const Checkoutpage = (): JSX.Element => {
                     </label>
                   </div>
                   {selectedPaymentMode === "paytm" && (
-                    <div className="overflow-hidden bg-white leading-normal">
+                    <div className="overflow-hidden bg-white leading-normal animate-fadeIn">
                       <p className="font-normal text-base p-4">
                         Your payment will be fulfilled by Razorpay Payment
                         gateway.
@@ -603,7 +625,7 @@ const Checkoutpage = (): JSX.Element => {
                     </label>
                   </div>
                   {selectedPaymentMode === "netbanking" && (
-                    <div className="overflow-hidden bg-white leading-normal">
+                    <div className="overflow-hidden bg-white leading-normal animate-fadeIn">
                       <p className="font-normal text-base p-4">
                         Your payment will be fulfilled by Razorpay Payment
                         gateway.
@@ -637,7 +659,7 @@ const Checkoutpage = (): JSX.Element => {
                     </label>
                   </div>
                   {selectedPaymentMode === "wallet" && (
-                    <div className="overflow-hidden bg-white leading-normal">
+                    <div className="overflow-hidden bg-white leading-normal animate-fadeIn">
                       <p className="font-normal text-base p-4">
                         Your payment will be fulfilled by Razorpay Payment
                         gateway.
@@ -655,7 +677,7 @@ const Checkoutpage = (): JSX.Element => {
                   return (
                     <>
                       <Link to={`/coursedetails/${item?.courseSlug}`}>
-                        <div className="border flex flex-row p-2 my-1">
+                        <div className="border flex flex-row p-2 my-1 animate-fadeIn">
                           <img
                             className="w-5/12 lg:w-3/12"
                             src={item?.imageurl}

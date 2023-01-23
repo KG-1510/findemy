@@ -68,7 +68,7 @@ const MylearningsComponent = (): JSX.Element => {
             className="bg-transparent text-sm font-normal outline-none p-2 w-full"
           />
         </form>
-        {purchasedCardsData?.length === 0 && purchasedCardsData && (
+        {(purchasedCardsData?.length === 0 && purchasedCardsData && purchasedCardsLoaded) && (
           <div className="flex flex-col w-full items-center justify-center my-10">
             <h1 className="text-4xl">🫤</h1>
             <p className="text-center">
@@ -87,7 +87,7 @@ const MylearningsComponent = (): JSX.Element => {
               {purchasedCardsData?.map((data) => {
                 return (
                   <>
-                    <div key={data?._id} className="px-2">
+                    <div key={data?._id} className="px-2 animate-fadeIn">
                       <CoursecardComponent
                         id={data?._id}
                         imageurl={data?.imageurl}

@@ -140,6 +140,6 @@ input[type="checkbox"]:before {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-in forwards;
+  animation: fadeIn 0.2s ease-in forwards;
 }
 

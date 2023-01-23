@@ -101,20 +101,21 @@ const Homepage = (): JSX.Element => {
           <Slider {...settings}>
             {courseCardsData?.map((data) => {
               return (
-                <div key={data._id} className="px-2">
+                <div key={data?._id} className="px-2 animate-fadeIn">
                   <CoursecardComponent
-                    id={data._id}
-                    imageurl={data.imageurl}
-                    title={data.title}
-                    courseSlug={data.courseSlug}
-                    instructorName={data.instructorName}
-                    rating={data.rating}
-                    votes={data.votes}
-                    price={data.price}
-                    oldPrice={data.oldPrice}
-                    category={data.category}
-                    tag={data.tag}
-                    level={data.level}
+                    key={data?._id}
+                    id={data?._id}
+                    imageurl={data?.imageurl}
+                    title={data?.title}
+                    courseSlug={data?.courseSlug}
+                    instructorName={data?.instructorName}
+                    rating={data?.rating}
+                    votes={data?.votes}
+                    price={data?.price}
+                    oldPrice={data?.oldPrice}
+                    category={data?.category}
+                    tag={data?.tag}
+                    level={data?.level}
                   />
                 </div>
               );
@@ -138,15 +139,18 @@ const Homepage = (): JSX.Element => {
       {isUserLoggedIn && (
         <>
           <div className="py-10 px-4 lg:px-44 font-bold text-2xl">
-            <h1 className="mb-4">Let's start learning, {userData?.fullName}!</h1>
+            <h1 className="mb-4">
+              Let's start learning, {userData?.fullName}!
+            </h1>
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               {purchasedCardsLoaded ? (
                 <>
                   {purchasedCardsData?.map((data) => {
                     return (
                       <>
-                        <div key={data?._id} className="px-2">
+                        <div key={data?._id} className="px-2 animate-fadeIn">
                           <CoursecardComponent
+                            key={data?._id}
                             id={data?._id}
                             imageurl={data?.imageurl}
                             title={data?.title}

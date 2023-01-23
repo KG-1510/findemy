@@ -38,6 +38,7 @@ const Coursepreview = ({
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
   const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isPreviewFixed, setIsPreviewFixed] = useState<boolean>(false);
   const [isCollidedFooter, setIsCollidedFooter] = useState<boolean>(false);
 
@@ -75,6 +76,7 @@ const Coursepreview = ({
       const _data = JSON.parse(localStorage.getItem("userData"));
       courseExistsInCart(_data?._id);
       courseEnrolledByUser(_data?._id);
+      setIsLoaded(true);
     }
   });
 
@@ -141,7 +143,7 @@ const Coursepreview = ({
               }`
         } right-20 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-3/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md`}
       >
-        {!coursePurchased ? (
+        {!coursePurchased && isLoaded ? (
           <img
             alt="img"
             className={`${
@@ -181,7 +183,7 @@ const Coursepreview = ({
           </>
         )}
         <div className="p-6 bg-primaryblack lg:bg-white">
-          {!coursePurchased ? (
+          {!coursePurchased && isLoaded ? (
             <>
               <h1 className="text-4xl font-bold mb-4">₹{price}</h1>
               <div className="w-full flex flex-row space-x-2">
@@ -222,12 +224,12 @@ const Coursepreview = ({
           ) : (
             <>
               <div>
-                {isGiftedCourse ? (
-                  <p className="text-center">
+                {isGiftedCourse && isLoaded ? (
+                  <p className="text-center animate-fadeIn">
                     🎁 You have been gifted this course, start learning!
                   </p>
                 ) : (
-                  <p className="text-center">
+                  <p className="text-center animate-fadeIn">
                     🎉 You have purchased this course, start learning!
                   </p>
                 )}
@@ -293,32 +295,36 @@ const Coursepreview = ({
           ₹{price}
         </h1>
         <div className="w-full flex flex-row justify-end space-x-2">
-          <button
-            onClick={() => addCourseToCart()}
-            disabled={cartCourseExists}
-            className={`${
-              cartCourseExists && "cursor-not-allowed opacity-70"
-            } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
-          >
-            {coursePurchased ? (
-              <>
-                <div className="flex items-center justify-center w-full">
-                  <Link to={`/streamcourse/${courseSlug}`}>
-                    <button className="flex flex-row items-center bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
-                      <AiFillPlayCircle className="mx-1" size={20} />
-                      Start streaming!
-                    </button>
-                  </Link>
-                </div>
-              </>
-            ) : cartCourseExists ? (
-              <span className="flex flex-row text-center w-full items-center justify-center">
-                ✓ Added to cart!
-              </span>
-            ) : (
-              <>Add to cart</>
-            )}
-          </button>
+          {coursePurchased ? (
+            <>
+              <div className="flex items-center justify-center w-full">
+                <Link to={`/streamcourse/${courseSlug}`}>
+                  <button className="flex flex-row items-center p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
+                    <AiFillPlayCircle className="mx-1" size={20} />
+                    Start streaming!
+                  </button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => addCourseToCart()}
+                disabled={cartCourseExists}
+                className={`${
+                  cartCourseExists && "cursor-not-allowed opacity-70"
+                } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
+              >
+                {cartCourseExists ? (
+                  <span className="flex flex-row text-center w-full items-center justify-center">
+                    ✓ Added to cart!
+                  </span>
+                ) : (
+                  <>Add to cart</>
+                )}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </>

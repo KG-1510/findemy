@@ -16,6 +16,7 @@ const Navbar = (): JSX.Element => {
   const [cookie, _, removeCookie] = useCookies(["authToken"]);
   const [showNavbarDrawer, setShowNavbarDrawer] = useState<boolean>(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState<boolean>(false);
+  const [cartCountLoaded, setCartCountLoaded] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<number>();
   const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AuthContext);
   const [userData, setUserData] = useState<any>({});
@@ -24,6 +25,7 @@ const Navbar = (): JSX.Element => {
     const _res = await getUserCart(authToken, userId);
     if (_res) {
       setCartCount(_res?.data?.cart?.length);
+      setCartCountLoaded(true);
     }
   };
 
@@ -203,13 +205,13 @@ const Navbar = (): JSX.Element => {
             </>
           )}
 
-          {isUserLoggedIn && (
+          {isUserLoggedIn && cartCountLoaded && (
             <>
               <Link to={"/cart"}>
                 <span className="w-10 h-10 relative flex items-center justify-center hover:bg-[#F5F5F5]">
                   <BiCartAlt aria-label="cart" className="h-5 w-5" />
                   {cartCount !== 0 && (
-                    <span className="absolute top-6 right-0 bg-findemypurple rounded-full text-xs font-light text-white h-4 w-4">
+                    <span className="absolute animate-fadeIn top-6 right-0 bg-findemypurple rounded-full text-xs font-light text-white h-4 w-4">
                       {cartCount}
                     </span>
                   )}
@@ -251,7 +253,7 @@ const Navbar = (): JSX.Element => {
               </button>
               {showNavbarDrawer && (
                 <>
-                  <div className="absolute w-60 flex flex-col bg-white z-50 drop-shadow-md top-16">
+                  <div className="absolute animate-fadeIn w-60 flex flex-col bg-white z-50 drop-shadow-md top-16">
                     <div className="flex flex-row p-2 w-full border-b">
                       <img
                         src={

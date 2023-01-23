@@ -20,7 +20,7 @@ const Checkoutgiftingsuccesspage = (): JSX.Element => {
         <h1 className="text-2xl lg:text-3xl text-center font-bold">
           Woohoo! Your course purchase was successful! 😁
         </h1>
-        <p className="text-base font-light my-3">
+        <p className="text-base text-center font-light my-3">
           Feel proud, you just gifted someone the joy of learning! 🎁
         </p>
         <p className="text-lg text-center font-light my-3">
