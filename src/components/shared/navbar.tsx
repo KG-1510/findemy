@@ -54,7 +54,7 @@ const Navbar = (): JSX.Element => {
     <>
       {showHamburgerMenu && (
         <>
-          <div className="fixed w-full top-16 z-50 drop-shadow-lg p-4 bg-white flex flex-col">
+          <div className="fixed w-full animate-fadeIn top-16 z-50 drop-shadow-lg p-4 bg-white flex flex-col">
             {isUserLoggedIn && (
               <>
                 <div className="flex flex-col items-center justify-center p-2 w-full border-b">
@@ -74,6 +74,11 @@ const Navbar = (): JSX.Element => {
                     </p>
                   </div>
                   <div className="flex flex-col w-full space-y-2 text-center px-4 py-2">
+                    <Link to={"/"}>
+                      <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
+                        Home
+                      </p>
+                    </Link>
                     <Link to={"/mylearnings"}>
                       <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
                         My learnings

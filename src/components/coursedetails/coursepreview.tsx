@@ -135,7 +135,7 @@ const Coursepreview = ({
       <div
         className={`block ${
           isPreviewFixed
-            ? `lg:fixed z-50 top-20 animate-fadeIn`
+            ? `lg:fixed z-50 top-20 lg:animate-fadeIn`
             : `lg:absolute z-40 ${
                 isCollidedFooter ? "bottom-96 mb-80" : "top-28"
               }`
@@ -147,7 +147,11 @@ const Coursepreview = ({
             className={`${
               isPreviewFixed || isCollidedFooter ? "hidden" : ""
             } border border-white w-full`}
-            src={imageurl}
+            src={
+              imageurl
+                ? imageurl
+                : "https://d2uolguxr56s4e.cloudfront.net/img/kartrapages/video_player_placeholder.gif"
+            }
           />
         ) : (
           <>
@@ -284,7 +288,7 @@ const Coursepreview = ({
           </div>
         </div>
       </div>
-      <div className="fixed lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-between h-16 bg-white shadow-inner">
+      <div className="fixed z-50 lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-between h-16 bg-white shadow-inner">
         <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
           ₹{price}
         </h1>
@@ -296,7 +300,18 @@ const Coursepreview = ({
               cartCourseExists && "cursor-not-allowed opacity-70"
             } p-2 bg-findemypurple hover:opacity-90 w-11/12 text-white font-semibold text-lg`}
           >
-            {cartCourseExists ? (
+            {coursePurchased ? (
+              <>
+                <div className="flex items-center justify-center w-full">
+                  <Link to={`/streamcourse/${courseSlug}`}>
+                    <button className="flex flex-row items-center bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
+                      <AiFillPlayCircle className="mx-1" size={20} />
+                      Start streaming!
+                    </button>
+                  </Link>
+                </div>
+              </>
+            ) : cartCourseExists ? (
               <span className="flex flex-row text-center w-full items-center justify-center">
                 ✓ Added to cart!
               </span>

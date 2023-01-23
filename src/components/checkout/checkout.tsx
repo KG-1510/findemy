@@ -223,7 +223,7 @@ const Checkoutpage = (): JSX.Element => {
             });
           }
           console.log(error);
-          navigate("/cart")
+          navigate("/cart");
         }
       },
       theme: {
@@ -522,7 +522,7 @@ const Checkoutpage = (): JSX.Element => {
                             placeholder="johndoe@okbank or 9876543210@okbank"
                             className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
                             {...register("upiID", {
-                              pattern: upi_vpa_regex,
+                              required: true,
                             })}
                           />
                           {errors.upiID && (
@@ -657,12 +657,12 @@ const Checkoutpage = (): JSX.Element => {
                       <Link to={`/coursedetails/${item?.courseSlug}`}>
                         <div className="border flex flex-row p-2 my-1">
                           <img
-                            className="w-3/12"
+                            className="w-5/12 lg:w-3/12"
                             src={item?.imageurl}
                             alt={item?.title}
                           />
                           <div className="flex flex-col">
-                            <h1 className="p-2 hover:text-findemypurple">
+                            <h1 className="p-2 text-sm lg:text-base hover:text-findemypurple">
                               {item?.title}
                             </h1>
                             {item?.isGiftedCourse && (

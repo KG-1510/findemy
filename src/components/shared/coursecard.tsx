@@ -40,7 +40,15 @@ const Coursecard = ({
           key={id}
           className="flex flex-col w-full items-start space-y-[1px] hover:cursor-pointer"
         >
-          <img src={imageurl} alt={title} className="h-full w-full" />
+          <img
+            src={
+              imageurl
+                ? imageurl
+                : "https://d2uolguxr56s4e.cloudfront.net/img/kartrapages/video_player_placeholder.gif"
+            }
+            alt={title}
+            className="h-full w-full"
+          />
           <h2 className="card-title font-bold text-lg leading-5 pt-1 overflow-hidden">
             {title}
           </h2>

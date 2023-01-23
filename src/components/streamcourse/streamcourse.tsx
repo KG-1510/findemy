@@ -57,7 +57,7 @@ const StreamcourseComponent = (): JSX.Element => {
   return (
     <>
       <NavbarComponent />
-      <div className="bg-primaryblack sticky h-14 z-50 w-full top-16 py-4 px-10 animate-fadeIn">
+      <div className="bg-primaryblack sticky h-14 z-40 w-full top-16 py-4 px-10 animate-fadeIn">
         <h1 className="text-white text-sm lg:text-base font-light">
           {courseDetailsData?.title}
         </h1>
