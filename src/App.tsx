@@ -25,7 +25,10 @@ function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
   return (
     <>
-      <ToastContainer />
+      <ToastContainer
+        progressClassName="toastProgress"
+        bodyClassName="toastBody"
+      />
       <AuthContext.Provider
         value={{
           isUserLoggedIn,

@@ -2,30 +2,15 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
+import MarkdownView from "react-showdown";
 import {
   getUserCart,
   getUserProfile,
   postAddCart,
   successHandler,
 } from "../../utils/api";
-
-interface SearchcardProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  id: string;
-  imageurl: string;
-  title: string;
-  courseSlug: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-}
+import { SearchcardProps } from "../../utils/interface";
+import { sanitizedHtmlText } from "../../utils/functions";
 
 const Searchcard = ({
   id,
@@ -33,6 +18,7 @@ const Searchcard = ({
   title,
   courseSlug,
   instructorName,
+  description,
   rating,
   votes,
   price,
@@ -47,7 +33,6 @@ const Searchcard = ({
 
   useEffect(() => {
     if (cookie?.authToken) {
-      console.log("rannn");
       const _data = JSON.parse(localStorage.getItem("userData"));
       courseExistsInCart(_data?._id);
       courseEnrolledByUser(_data?._id);
@@ -87,6 +72,11 @@ const Searchcard = ({
     }
   };
 
+  let sanitizedCourseDescription;
+  if (description) {
+    sanitizedCourseDescription = sanitizedHtmlText(description);
+  }
+
   return (
     <>
       <Link to={`/coursedetails/${courseSlug}`}>
@@ -98,9 +88,12 @@ const Searchcard = ({
             <div className="flex flex-row justify-between">
               <div className="flex flex-col">
                 <h1 className="font-semibold text-lg">{title}</h1>
-                <p className="text-sm font-normal">
-                  Here is the description for this course on Findemy - Learn
-                  Anytime! Anywhere!
+                <p className="text-xs lg:text-sm font-normal card-title pr-1">
+                  <MarkdownView
+                    className="text-sm font-normal"
+                    style={{ whiteSpace: "pre-line" }}
+                    markdown={sanitizedCourseDescription}
+                  />
                 </p>
               </div>
               <div className="flex flex-col">
@@ -134,7 +127,7 @@ const Searchcard = ({
               </h3>
             </div>
             <p className="text-xs text-gray-500 font-normal">
-              40 hours • 123 lectures • {level}
+              40 hours • 123 lectures • {level} • {category}
             </p>
             <div className="w-full flex flex-row justify-between items-center my-1">
               {tag === "Bestseller" && (

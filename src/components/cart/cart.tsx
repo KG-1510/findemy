@@ -108,7 +108,6 @@ const Cartpage = (): JSX.Element => {
               <p className="text-gray-500 font-normal text-sm line-through">
                 ₹{cartOldPrice}
               </p>
-              {/* TODO: Percentage discount checking utility */}
               <p className="text-gray-500 font-normal text-sm">
                 {getDiscountPercent(cartOldPrice, cartNewPrice)}% off
               </p>

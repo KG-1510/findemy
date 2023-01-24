@@ -19,6 +19,7 @@ import { useCookies } from "react-cookie";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../App";
 import { password_regex } from "../../utils/constants";
+import { toast } from "react-toastify";
 
 type SignUpInputs = {
   fullName: string;
@@ -28,7 +29,7 @@ type SignUpInputs = {
 };
 
 const Signuppage = (): JSX.Element => {
-  const [_, setCookie] = useCookies(["authToken"]);
+  const [cookie, setCookie] = useCookies(["authToken"]);
   const [isSubmittingSignup, setIsSubmittingSignup] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -48,6 +49,22 @@ const Signuppage = (): JSX.Element => {
   };
 
   useEffect(() => {
+    if (cookie?.authToken) {
+      {
+        toast.error("You are already logged in! No need to signup again!", {
+          toastId: "unauthorized",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          className: "font-DMSans",
+        });
+      }
+      navigate("/");
+    }
     /* global google */
     // @ts-expect-error
     google.accounts.id.initialize({
@@ -65,7 +82,6 @@ const Signuppage = (): JSX.Element => {
   const handleSignup = async (data: SignUpInputs) => {
     const _res = await postSignupUser(data);
     if (_res) {
-      console.log(_res);
       setCookie("authToken", _res.token, { path: "/" });
       const payload = {
         _id: _res?.data?._id,

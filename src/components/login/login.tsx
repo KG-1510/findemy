@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { postLoginUser, successHandler } from "../../utils/api";
 import { AuthContext } from "../../App";
+import { toast } from "react-toastify";
 
 type LogInInputs = {
   email: string;
@@ -24,7 +25,7 @@ type LogInInputs = {
 };
 
 const Loginpage = (): JSX.Element => {
-  const [_, setCookie] = useCookies(["authToken"]);
+  const [cookie, setCookie] = useCookies(["authToken"]);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -42,6 +43,22 @@ const Loginpage = (): JSX.Element => {
   };
 
   useEffect(() => {
+    if (cookie?.authToken) {
+      {
+        toast.error("You are already logged in! No need to login again!", {
+          toastId: "unauthorized",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          className: "font-DMSans",
+        });
+      }
+      navigate("/");
+    }
     /* global google */
     // @ts-expect-error
     google.accounts.id.initialize({

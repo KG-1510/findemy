@@ -8,35 +8,13 @@ import {
 } from "../shared";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useCookies } from "react-cookie";
+import { CoursedetailsProps } from "../../utils/interface";
 
 type GiftCourseInputs = {
   recipientName: string;
   recipientEmail: string;
   message?: string;
 };
-
-// TODO: export interface from common file
-interface CoursedetailsProps {
-  id: number;
-  imageurl: string;
-  title: string;
-  courseSlug: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-  learningOutcomes: String[];
-  requirements: String[];
-  description: string;
-  instructorProfession: string;
-  instructorImg: string;
-  instructorDescription: string;
-  isGiftedCourse?: string;
-}
 
 const GiftcourseComponent = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);

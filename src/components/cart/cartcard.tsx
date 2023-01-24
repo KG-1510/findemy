@@ -4,25 +4,7 @@ import MarkdownView from "react-showdown";
 import StarRatings from "react-star-ratings";
 import { patchUserCart, successHandler } from "../../utils/api";
 import { sanitizedHtmlText, truncateText } from "../../utils/functions";
-
-interface CartcardProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  id: number;
-  imageurl: string;
-  title: string;
-  courseSlug: string;
-  instructorName: string;
-  description: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-}
+import { CartcardProps } from "../../utils/interface";
 
 const Cartcard = ({
   id,

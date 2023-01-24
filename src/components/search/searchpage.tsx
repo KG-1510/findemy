@@ -8,24 +8,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { getSearchedCourses } from "../../utils/api";
 import { useLocation } from "react-router-dom";
-
-interface SearchcardProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  id: string;
-  courseSlug: string;
-  imageurl: string;
-  title: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-}
+import { SearchcardProps } from "../../utils/interface";
 
 const Searchpage = (): JSX.Element => {
   const [searchCardData, setSearchCardData] = useState<SearchcardProps[]>();
@@ -52,7 +35,6 @@ const Searchpage = (): JSX.Element => {
   const fetchCourses = async () => {
     const _res = await getSearchedCourses(searchString);
     if (_res) {
-      console.log(_res);
       setSearchCardData(_res.data);
       setSearchCardDataCopy(_res.data);
       setResultLength(_res.data.length);
@@ -211,6 +193,7 @@ const Searchpage = (): JSX.Element => {
                       title={data?.title}
                       courseSlug={data?.courseSlug}
                       instructorName={data?.instructorName}
+                      description={data?.description}
                       rating={data?.rating}
                       votes={data?.votes}
                       price={data?.price}

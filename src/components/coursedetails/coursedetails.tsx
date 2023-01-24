@@ -15,29 +15,8 @@ import { CoursepreviewComponent } from ".";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../utils/api";
 import MarkdownView from "react-showdown";
-import { sanitizedHtmlText, truncateText } from "../../utils/functions";
-
-interface CoursedetailsProps {
-  id: number;
-  imageurl: string;
-  title: string;
-  courseSlug: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-  learningOutcomes: String[];
-  requirements: String[];
-  description: string;
-  instructorProfession: string;
-  instructorImg: string;
-  instructorDescription: string;
-  isGiftedCourse?: string;
-}
+import { sanitizedHtmlText } from "../../utils/functions";
+import { CoursedetailsProps } from "../../utils/interface";
 
 const Coursedetailspage = (): JSX.Element => {
   const params = useParams();

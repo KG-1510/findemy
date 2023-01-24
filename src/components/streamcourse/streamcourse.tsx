@@ -4,40 +4,20 @@ import MarkdownView from "react-showdown";
 import { getCourseDetails } from "../../utils/api";
 import { streamable_courses } from "../../utils/constants";
 import { sanitizedHtmlText } from "../../utils/functions";
+import { CoursedetailsProps } from "../../utils/interface";
 import { FooterComponent, NavbarComponent } from "../shared";
-
-interface CoursedetailsProps {
-  id: number;
-  imageurl: string;
-  title: string;
-  courseSlug: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price: number;
-  oldPrice: number;
-  category: string;
-  tag?: string;
-  level?: string;
-  learningOutcomes: String[];
-  requirements: String[];
-  description: string;
-  instructorProfession: string;
-  instructorImg: string;
-  instructorDescription: string;
-  isGiftedCourse?: string;
-}
 
 const StreamcourseComponent = (): JSX.Element => {
   const [courseDetailsData, setCourseDetailsData] =
     useState<CoursedetailsProps>();
-  const backendBaseUrl: string = process.env.REACT_APP_BACKEND_BASE_URL;
+  const backendBaseUrl: string | undefined =
+    process.env.REACT_APP_BACKEND_BASE_URL;
 
   useEffect(() => {
     fetchCourseDetails();
   }, []);
 
-  const fetchCourseDetails = async () => {
+  const fetchCourseDetails = async () => { 
     const _res = await getCourseDetails(params.courseSlug);
     if (_res) {
       setCourseDetailsData(_res.data);
@@ -46,7 +26,7 @@ const StreamcourseComponent = (): JSX.Element => {
 
   const params = useParams();
 
-  let sanitizedCourseDescription;
+  let sanitizedCourseDescription: string;
 
   if (courseDetailsData) {
     sanitizedCourseDescription = sanitizedHtmlText(

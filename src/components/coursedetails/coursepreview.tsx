@@ -18,16 +18,7 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { clientBaseUrl, streamable_courses } from "../../utils/constants";
-
-interface CoursepreviewProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  price: number;
-  imageurl: string;
-  courseSlug: string;
-  isGiftedCourse?: string;
-}
+import { CoursepreviewProps } from "../../utils/interface";
 
 const Coursepreview = ({
   price,
@@ -143,7 +134,7 @@ const Coursepreview = ({
               }`
         } right-20 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-3/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md`}
       >
-        {!coursePurchased && isLoaded ? (
+        {!coursePurchased ? (
           <img
             alt="img"
             className={`${
@@ -183,7 +174,7 @@ const Coursepreview = ({
           </>
         )}
         <div className="p-6 bg-primaryblack lg:bg-white">
-          {!coursePurchased && isLoaded ? (
+          {!coursePurchased ? (
             <>
               <h1 className="text-4xl font-bold mb-4">₹{price}</h1>
               <div className="w-full flex flex-row space-x-2">
@@ -291,9 +282,11 @@ const Coursepreview = ({
         </div>
       </div>
       <div className="fixed z-50 lg:hidden bottom-0 w-full flex p-3 flex-row items-center justify-between h-16 bg-white shadow-inner">
-        <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
-          ₹{price}
-        </h1>
+        {!coursePurchased && (
+          <h1 className="text-lg font-bold w-1/5 flex items-center justify-center">
+            ₹{price}
+          </h1>
+        )}
         <div className="w-full flex flex-row justify-end space-x-2">
           {coursePurchased ? (
             <>

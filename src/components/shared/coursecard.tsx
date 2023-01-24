@@ -1,23 +1,6 @@
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
-
-interface CoursecardProps {
-  //   onCardClick: () => void;
-  //   link: activeLinkProps;
-  //   onDeleteCard: (_id: string, closeModal: () => void) => void;
-  id: string;
-  courseSlug: string;
-  imageurl: string;
-  title: string;
-  instructorName: string;
-  rating: string;
-  votes: string;
-  price?: number;
-  oldPrice?: number;
-  category: string;
-  tag?: string;
-  level?: string;
-}
+import { CoursecardProps } from "../../utils/interface";
 
 const Coursecard = ({
   id,
@@ -30,15 +13,13 @@ const Coursecard = ({
   price,
   oldPrice,
   tag,
-  category,
-  level,
 }: CoursecardProps): JSX.Element => {
   return (
     <>
       <Link to={`/coursedetails/${courseSlug}`}>
         <div
           key={id}
-          className="flex flex-col w-full items-start space-y-[1px] hover:cursor-pointer"
+          className="flex flex-col w-full items-start space-y-[1px] hover:cursor-pointer hover:opacity-90"
         >
           <img
             src={

@@ -170,7 +170,6 @@ const Checkoutpage = (): JSX.Element => {
             const _giftCoursedata = JSON.parse(
               localStorage.getItem("giftCourseData")
             );
-            console.log(_giftCoursedata);
             if (_giftCoursedata) {
               const _resGift = await postGiftedCourseEnroll(
                 cookie?.authToken,
@@ -197,7 +196,6 @@ const Checkoutpage = (): JSX.Element => {
                 cartCardsData
               );
               if (res) {
-                console.log(res);
                 successHandler(_res?.data?.message);
                 await postPurchaseSuccessMail(
                   cookie?.authToken,
@@ -223,7 +221,6 @@ const Checkoutpage = (): JSX.Element => {
               className: "font-DMSans",
             });
           }
-          console.log(error);
           navigate("/cart");
         }
       },
@@ -242,7 +239,6 @@ const Checkoutpage = (): JSX.Element => {
     formState: { errors },
   } = useForm<CardPaymentInputs | any>();
   const onSubmit: SubmitHandler<CardPaymentInputs | any> = (data) => {
-    console.log("Form data:", data);
     if (data) {
       handleCheckout();
     }
@@ -417,7 +413,6 @@ const Checkoutpage = (): JSX.Element => {
                                 .replace(/\W/gi, "")
                                 .replace(/(.{4})/g, "$1 ");
                               e.target.value = cardnumspaced;
-                              console.log(e.target.value);
                             }}
                             className="w-full text-base font-normal tracking-wider px-4 py-2 focus:outline-none border border-black"
                             {...register("cardNumber", {

@@ -36,7 +36,6 @@ const MylearningsComponent = (): JSX.Element => {
 
   const handleSearch = (e) => {
     if (e.target.value !== "") {
-      console.log(e.target.value);
       const searchedItems = purchasedCardsDataCopy.filter((item) => {
         return item.title.toLowerCase().includes(e.target.value.toLowerCase());
       });

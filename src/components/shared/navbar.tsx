@@ -59,7 +59,7 @@ const Navbar = (): JSX.Element => {
           <div className="fixed w-full animate-fadeIn top-16 z-50 drop-shadow-lg p-4 bg-white flex flex-col">
             {isUserLoggedIn && (
               <>
-                <div className="flex flex-col items-center justify-center p-2 w-full border-b">
+                <div className="flex flex-col items-center justify-center p-2 w-full border-0 lg:border-b">
                   <img
                     src={
                       userData?.imageurl
@@ -189,7 +189,7 @@ const Navbar = (): JSX.Element => {
         </form>
         <div className="flex">
           <span
-            onClick={() => setShowSearchBarMobile(true)}
+            onClick={() => setShowSearchBarMobile(!showSearchBarMobile)}
             className="w-10 h-10 flex md:hidden items-center justify-center hover:bg-[#F5F5F5]"
           >
             <AiOutlineSearch className="h-5 w-5" />
@@ -314,7 +314,7 @@ const Navbar = (): JSX.Element => {
         <div className="p-2 bg-white drop-shadow-md">
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="flex bg-[#f8fafb] md:hidden w-full border border-primaryblack rounded-3xl py-5 flex-1 h-10 items-center"
+            className="flex animate-fadeIn bg-[#f8fafb] md:hidden w-full border border-primaryblack rounded-3xl py-5 flex-1 h-10 items-center"
           >
             <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
             <input
