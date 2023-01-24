@@ -216,14 +216,14 @@ const Navbar = (): JSX.Element => {
           />
         </form>
         {debouncedSearchResults && debouncedQuery && (
-          <div className="absolute top-32 lg:top-14 w-11/12 lg:w-2/5 left-0 lg:left-40 bg-white z-50 animate-fadeIn flex flex-col space-y-4 p-2 border">
+          <div className="absolute h-60 overflow-y-auto top-32 lg:top-14 w-11/12 lg:w-2/5 left-0 lg:left-40 bg-white z-50 animate-fadeIn flex flex-col space-y-4 p-2 border">
             {debouncedSearchLoaded ? (
               <>
                 {debouncedSearchResults.length > 0 ? (
                   <>
                     {debouncedSearchResults.map((item) => {
                       return (
-                        <Link to={`/coursedetails/${item.courseSlug}`}>
+                        <a href={`/coursedetails/${item.courseSlug}`}>
                           <div
                             key={item.id}
                             className="flex flex-row items-center bg-white animate-fadeIn hover:bg-gray-100 p-1"
@@ -243,18 +243,18 @@ const Navbar = (): JSX.Element => {
                               </p>
                             </div>
                           </div>
-                        </Link>
+                        </a>
                       );
                     })}
                   </>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-36">
+                  <div className="flex flex-col items-center justify-center h-60">
                     <p>No relevant search results found! 🫤</p>
                   </div>
                 )}
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-36">
+              <div className="flex flex-col items-center justify-center h-60">
                 <SpinnerloaderComponent />
               </div>
             )}
