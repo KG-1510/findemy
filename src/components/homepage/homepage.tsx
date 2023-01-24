@@ -101,7 +101,7 @@ const Homepage = (): JSX.Element => {
           <Slider {...settings}>
             {courseCardsData?.map((data) => {
               return (
-                <div key={data?._id} className="px-2 animate-fadeIn">
+                <div key={data?._id} className="px-2 animate-fadeIn hover:drop-shadow-sm">
                   <CoursecardComponent
                     key={data?._id}
                     id={data?._id}

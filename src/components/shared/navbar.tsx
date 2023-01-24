@@ -7,7 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../App";
 import { useCookies } from "react-cookie";
-import { getUserCart, successHandler } from "../../utils/api";
+import {
+  getSearchedCourses,
+  getUserCart,
+  successHandler,
+} from "../../utils/api";
+import { CoursecardProps } from "../../utils/interface";
+import SpinnerloaderComponent from "./spinnerloader";
 
 const Navbar = (): JSX.Element => {
   const navigate = useNavigate();
@@ -18,6 +24,12 @@ const Navbar = (): JSX.Element => {
   const [showHamburgerMenu, setShowHamburgerMenu] = useState<boolean>(false);
   const [cartCountLoaded, setCartCountLoaded] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<number>();
+  const [debouncedQuery, setDebouncedQuery] = useState<string>();
+  const [debouncedSearchResults, setDebouncedSearchResults] = useState<
+    CoursecardProps[]
+  >([]);
+  const [debouncedSearchLoaded, setDebouncedSearchLoaded] =
+    useState<boolean>(false);
   const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AuthContext);
   const [userData, setUserData] = useState<any>({});
 
@@ -38,10 +50,26 @@ const Navbar = (): JSX.Element => {
     }
   }, []);
 
+  useEffect(() => {
+    if (debouncedQuery) {
+      setDebouncedSearchLoaded(false);
+      const _res = setTimeout(async () => {
+        const _results = await getSearchedCourses(debouncedQuery);
+        if (_results) {
+          setDebouncedSearchResults(_results?.data);
+          setDebouncedSearchLoaded(true);
+        }
+      }, 1000);
+      return () => clearTimeout(_res);
+    }
+  }, [debouncedQuery]);
+
   const handleSearch = (e) => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
       navigate(`/search?query=${e.target.value}`);
+    } else {
+      setDebouncedQuery(e.target.value);
     }
   };
 
@@ -181,12 +209,57 @@ const Navbar = (): JSX.Element => {
           <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
           <input
             type="search"
-            onKeyDown={(e) => handleSearch(e)}
+            onKeyUp={(e) => handleSearch(e)}
             aria-label="Search"
             placeholder="Search for anything"
             className="bg-transparent text-sm font-normal outline-none p-2 w-full"
           />
         </form>
+        {debouncedSearchResults && debouncedQuery && (
+          <div className="absolute top-32 lg:top-14 w-11/12 lg:w-2/5 left-0 lg:left-40 bg-white z-50 animate-fadeIn flex flex-col space-y-4 p-2 border">
+            {debouncedSearchLoaded ? (
+              <>
+                {debouncedSearchResults.length > 0 ? (
+                  <>
+                    {debouncedSearchResults.map((item) => {
+                      return (
+                        <Link to={`/coursedetails/${item.courseSlug}`}>
+                          <div
+                            key={item.id}
+                            className="flex flex-row items-center bg-white animate-fadeIn hover:bg-gray-100 p-1"
+                          >
+                            <img
+                              className="w-1/12"
+                              src={item.imageurl}
+                              alt={item.imageurl}
+                            />
+                            <div className="flex flex-col w-full items-center justify-start text-left ml-2">
+                              <p className="w-full text-sm hover:text-findemypurple">
+                                {item.title}
+                              </p>
+
+                              <p className="w-full text-xs font-light text-gray-500">
+                                by {item.instructorName}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-36">
+                    <p>No relevant search results found! 🫤</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-36">
+                <SpinnerloaderComponent />
+              </div>
+            )}
+          </div>
+        )}
         <div className="flex">
           <span
             onClick={() => setShowSearchBarMobile(!showSearchBarMobile)}
@@ -319,7 +392,7 @@ const Navbar = (): JSX.Element => {
             <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
             <input
               type="search"
-              onKeyDown={(e) => {
+              onKeyUp={(e) => {
                 handleSearch(e);
               }}
               aria-label="Search"
