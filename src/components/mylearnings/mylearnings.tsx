@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { getUserProfile } from "../../utils/api";
+import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 import { Coursecardloader } from "../homepage";
 import {
   CoursecardComponent,
@@ -29,16 +30,22 @@ const MylearningsComponent = (): JSX.Element => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      fetchPurchasedItems(cookie?.authToken, _data?._id);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      fetchPurchasedItems(cookie?.authToken, _data?._id!);
     }
   }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     if (e.target.value !== "") {
-      const searchedItems = purchasedCardsDataCopy.filter((item) => {
-        return item.title.toLowerCase().includes(e.target.value.toLowerCase());
-      });
+      const searchedItems = purchasedCardsDataCopy.filter(
+        (item: CoursedetailsProps) => {
+          return item.title
+            .toLowerCase()
+            .includes(e.target.value.toLowerCase());
+        }
+      );
       setPurchasedCardsData(searchedItems);
     } else if (e.target.value === "") {
       setPurchasedCardsData(purchasedCardsDataCopy);
@@ -67,28 +74,30 @@ const MylearningsComponent = (): JSX.Element => {
             className="bg-transparent text-sm font-normal outline-none p-2 w-full"
           />
         </form>
-        {(purchasedCardsData?.length === 0 && purchasedCardsData && purchasedCardsLoaded) && (
-          <div className="flex flex-col w-full items-center justify-center my-10">
-            <h1 className="text-4xl">🫤</h1>
-            <p className="text-center">
-              You have not enrolled into any course! Purchase a course today!
-            </p>
-            <Link to={"/"}>
-              <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
-                Keep Shopping
-              </button>
-            </Link>
-          </div>
-        )}
+        {purchasedCardsData?.length === 0 &&
+          purchasedCardsData &&
+          purchasedCardsLoaded && (
+            <div className="flex flex-col w-full items-center justify-center my-10">
+              <h1 className="text-4xl">🫤</h1>
+              <p className="text-center">
+                You have not enrolled into any course! Purchase a course today!
+              </p>
+              <Link to={"/"}>
+                <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
+                  Keep Shopping
+                </button>
+              </Link>
+            </div>
+          )}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {purchasedCardsLoaded ? (
             <>
-              {purchasedCardsData?.map((data) => {
+              {purchasedCardsData?.map((data: CoursedetailsProps) => {
                 return (
                   <>
                     <div key={data?._id} className="px-2 animate-fadeIn">
                       <CoursecardComponent
-                        id={data?._id}
+                        _id={data?._id}
                         imageurl={data?.imageurl}
                         title={data?.title}
                         courseSlug={data?.courseSlug}

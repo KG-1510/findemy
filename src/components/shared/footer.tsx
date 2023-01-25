@@ -1,7 +1,9 @@
 import { VscGlobe } from "react-icons/vsc";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Footer = (): JSX.Element => {
+  const location = useLocation();
   return (
     <footer className="bg-primaryblack">
       <div className="hidden lg:flex flex-col lg:flex-row px-20 h-24 border-b border-gray-500 w-full justify-between">
@@ -226,7 +228,11 @@ const Footer = (): JSX.Element => {
         </div>
       </div>
       <Link to={"/"}>
-        <div className="bg-primaryblack mb-16 lg:mb-0">
+        <div
+          className={`bg-primaryblack ${
+            location.pathname === "/coursedetails" ? "mb-16" : ""
+          } lg:mb-0`}
+        >
           <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
             <h2 className="text-3xl text-white text-center lg:text-left font-bold hover:cursor-pointer">
               F<span className="text-findemypurple">i</span>ndemy

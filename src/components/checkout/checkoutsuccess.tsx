@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { getUserProfile } from "../../utils/api";
 import Checkoutordersloader from "./checkoutordersloader";
+import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 
 const Checkoutsuccesspage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
@@ -24,8 +25,8 @@ const Checkoutsuccesspage = (): JSX.Element => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      fetchPurchasedItems(cookie?.authToken, _data?._id);
+      const _data: UserDataProps | null = JSON.parse(localStorage.getItem("userData")!);
+      fetchPurchasedItems(cookie?.authToken, _data?._id!);
     }
   }, []);
 
@@ -56,7 +57,7 @@ const Checkoutsuccesspage = (): JSX.Element => {
         <div className="flex flex-col w-full lg:w-2/4">
           {purchasedCardsLoaded ? (
             <>
-              {purchasedCardsData?.map((item) => {
+              {purchasedCardsData?.map((item: CoursedetailsProps) => {
                 return (
                   <>
                     <Link to={`/coursedetails/${item?.courseSlug}`}>

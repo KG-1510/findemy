@@ -18,9 +18,15 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { clientBaseUrl, streamable_courses } from "../../utils/constants";
-import { CoursepreviewProps } from "../../utils/interface";
+import {
+  CoursedetailsProps,
+  CoursepreviewProps,
+  UserDataProps,
+} from "../../utils/interface";
+import { getDiscountPercent } from "../../utils/functions";
 
 const Coursepreview = ({
+  oldPrice,
   price,
   imageurl,
   courseSlug,
@@ -39,7 +45,8 @@ const Coursepreview = ({
     return () => window.removeEventListener("scroll", listenToScroll);
   }, []);
 
-  const backendBaseUrl: string = process.env.REACT_APP_BACKEND_BASE_URL;
+  const backendBaseUrl: string | undefined =
+    process.env.REACT_APP_BACKEND_BASE_URL;
 
   const listenToScroll = () => {
     let heightToSetFixed = 300;
@@ -64,9 +71,11 @@ const Coursepreview = ({
 
   useEffect(() => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      courseExistsInCart(_data?._id);
-      courseEnrolledByUser(_data?._id);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      courseExistsInCart(_data?._id!);
+      courseEnrolledByUser(_data?._id!);
       setIsLoaded(true);
     }
   });
@@ -74,7 +83,11 @@ const Coursepreview = ({
   const courseExistsInCart = async (userId: string) => {
     const _res = await getUserCart(cookie?.authToken, userId);
     if (_res) {
-      if (_res?.data?.cart?.some((item) => item.courseSlug === courseSlug)) {
+      if (
+        _res?.data?.cart?.some(
+          (item: CoursedetailsProps) => item.courseSlug === courseSlug
+        )
+      ) {
         setCartCourseExists(true);
       }
     }
@@ -85,7 +98,7 @@ const Coursepreview = ({
     if (_res) {
       if (
         _res?.data?.coursesEnrolled?.some(
-          (item) => item.courseSlug === courseSlug
+          (item: CoursedetailsProps) => item.courseSlug === courseSlug
         )
       ) {
         setCoursePurchased(true);
@@ -95,11 +108,17 @@ const Coursepreview = ({
 
   const addCourseToCart = async () => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      const _res = await postAddCart(cookie?.authToken, _data?._id, courseSlug);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      const _res = await postAddCart(
+        cookie?.authToken,
+        _data?._id!,
+        courseSlug
+      );
       if (_res) {
         successHandler("Added to cart successfully! 🎉");
-        courseExistsInCart(_data?._id);
+        courseExistsInCart(_data?._id!);
         return true;
       }
     } else {
@@ -176,7 +195,13 @@ const Coursepreview = ({
         <div className="p-6 bg-primaryblack lg:bg-white">
           {!coursePurchased ? (
             <>
-              <h1 className="text-4xl font-bold mb-4">₹{price}</h1>
+              <div className="flex flex-row justify-start items-center space-x-2">
+                <h1 className="text-4xl font-bold mb-4">₹{price}</h1>
+                <p className="font-light line-through">₹{oldPrice}</p>
+                <p className="text-gray-500 font-normal text-sm">
+                  {getDiscountPercent(oldPrice, price)}% off
+                </p>
+              </div>
               <div className="w-full flex flex-row space-x-2">
                 <button
                   onClick={() => addCourseToCart()}

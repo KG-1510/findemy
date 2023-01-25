@@ -35,9 +35,9 @@ const Signuppage = (): JSX.Element => {
   const navigate = useNavigate();
   const { setIsUserLoggedIn } = useContext(AuthContext);
 
-  const clientId: string = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId: string | undefined = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-  const handleGoogleCallbackResponse = (response) => {
+  const handleGoogleCallbackResponse = (response: any) => {
     const userObject: any = jwt_decode(response.credential);
     const payload = {
       fullName: userObject?.name,

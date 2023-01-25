@@ -70,7 +70,7 @@ export const getUserProfile = async (authToken: string, userId: string) => {
       });
       return _res.data;
     }
-  } catch (err) {
+  } catch (err:any) {
     if (err.response.status === 401) {
       return err;
     }
@@ -87,7 +87,7 @@ export const getUserCart = async (authToken: string, userId: string) => {
       });
       return _res.data;
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     if (err.response.status === 401) {
       return err;
@@ -117,7 +117,7 @@ export const patchUserCart = async (
       });
       return _res.data;
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     if (err.response.status === 401) {
       return err;
@@ -151,7 +151,7 @@ export const postAddCart = async (
       });
       return _res.data;
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     if (err.response.status === 401) {
       return err;
@@ -268,7 +268,7 @@ export const postGiftSuccessMail = async (
   recipientFullName: string,
   recipientEmail: string,
   coursesEnrolled: any,
-  message?: string,
+  message?: string
 ) => {
   try {
     const _res = await axios({
@@ -283,7 +283,7 @@ export const postGiftSuccessMail = async (
         recipientFullName,
         recipientEmail,
         coursesEnrolled,
-        message
+        message,
       },
     });
     return _res.data;

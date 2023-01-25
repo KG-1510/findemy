@@ -8,13 +8,17 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { getSearchedCourses } from "../../utils/api";
 import { useLocation } from "react-router-dom";
-import { SearchcardProps } from "../../utils/interface";
+import {
+  CoursecardProps,
+  CoursedetailsProps,
+  SearchcardProps,
+} from "../../utils/interface";
 
 const Searchpage = (): JSX.Element => {
   const [searchCardData, setSearchCardData] = useState<SearchcardProps[]>();
   const [searchCardDataCopy, setSearchCardDataCopy] =
     useState<SearchcardProps[]>();
-  const [resultLength, setResultLength] = useState<number>();
+  const [resultLength, setResultLength] = useState<number>(0);
   const [searchDataLoaded, setSearchDataLoaded] = useState<boolean>(false);
   const [appliedFilters, setAppliedFilters] = useState<any>([]);
 
@@ -33,7 +37,7 @@ const Searchpage = (): JSX.Element => {
   }, [searchString]);
 
   const fetchCourses = async () => {
-    const _res = await getSearchedCourses(searchString);
+    const _res = await getSearchedCourses(searchString!);
     if (_res) {
       setSearchCardData(_res.data);
       setSearchCardDataCopy(_res.data);
@@ -42,7 +46,7 @@ const Searchpage = (): JSX.Element => {
     }
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e: any) => {
     if (!appliedFilters.includes(e.target.value)) {
       appliedFilters.push(e.target.value);
     } else {
@@ -59,9 +63,9 @@ const Searchpage = (): JSX.Element => {
     }
   };
 
-  const renderFilteredResults = (appliedFilters) => {
-    const _data = searchCardDataCopy.filter((item) => {
-      return appliedFilters.includes(item.level);
+  const renderFilteredResults = (appliedFilters: string[]) => {
+    const _data = searchCardDataCopy!.filter((item: CoursecardProps) => {
+      return appliedFilters.includes(item.level!);
     });
     setSearchCardData(_data);
   };
@@ -82,7 +86,7 @@ const Searchpage = (): JSX.Element => {
         {appliedFilters.length > 0 && (
           <p className="text-base font-light animate-fadeIn">
             {searchCardData?.length} results for filter - Level:{" "}
-            {appliedFilters?.map((item) => {
+            {appliedFilters?.map((item: string) => {
               return (
                 <span className="font-semibold">
                   {item}
@@ -183,12 +187,12 @@ const Searchpage = (): JSX.Element => {
               </>
             )}
 
-            {searchCardData?.length > 0 && searchDataLoaded ? (
+            {searchCardData?.length! > 0 && searchDataLoaded ? (
               searchCardData?.map((data) => {
                 return (
-                  <div key={data?.id} className="px-2 animate-fadeIn">
+                  <div key={data?._id} className="px-2 animate-fadeIn">
                     <SearchcardComponent
-                      id={data?.id}
+                      _id={data?._id}
                       imageurl={data?.imageurl}
                       title={data?.title}
                       courseSlug={data?.courseSlug}

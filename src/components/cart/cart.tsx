@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { getUserCart } from "../../utils/api";
 import { useCookies } from "react-cookie";
 import { getDiscountPercent } from "../../utils/functions";
+import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 
 const Cartpage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
@@ -16,8 +17,10 @@ const Cartpage = (): JSX.Element => {
 
   useEffect(() => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      fetchCartItems(cookie?.authToken, _data?._id);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      fetchCartItems(cookie?.authToken, _data?._id!);
     }
   }, []);
 
@@ -43,7 +46,7 @@ const Cartpage = (): JSX.Element => {
             } `}
           >
             <p className="text-base text-gray-500 font-normal mb-8">
-              {cartCardsData?.length} Course{" "}
+              {cartCardsData?.length} Course
               {cartCardsData?.length > 1 ? "s" : ""} in Cart
             </p>
             {cartCardsData?.length === 0 && cartDataLoaded && (
@@ -61,11 +64,11 @@ const Cartpage = (): JSX.Element => {
             )}
             {cartDataLoaded ? (
               <>
-                {cartCardsData?.map((data) => {
+                {cartCardsData?.map((data: CoursedetailsProps) => {
                   return (
-                    <div key={data.id} className="px-2 animate-fadeIn">
+                    <div key={data?._id} className="px-2 animate-fadeIn">
                       <CartcardComponent
-                        id={data?.id}
+                        _id={data?._id}
                         imageurl={data?.imageurl}
                         title={data?.title}
                         courseSlug={data?.courseSlug}

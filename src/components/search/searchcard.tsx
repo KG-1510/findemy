@@ -9,11 +9,15 @@ import {
   postAddCart,
   successHandler,
 } from "../../utils/api";
-import { SearchcardProps } from "../../utils/interface";
+import {
+  CoursedetailsProps,
+  SearchcardProps,
+  UserDataProps,
+} from "../../utils/interface";
 import { sanitizedHtmlText } from "../../utils/functions";
 
 const Searchcard = ({
-  id,
+  _id,
   imageurl,
   title,
   courseSlug,
@@ -33,16 +37,22 @@ const Searchcard = ({
 
   useEffect(() => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      courseExistsInCart(_data?._id);
-      courseEnrolledByUser(_data?._id);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      courseExistsInCart(_data?._id!);
+      courseEnrolledByUser(_data?._id!);
     }
   });
 
   const courseExistsInCart = async (userId: string) => {
     const _res = await getUserCart(cookie?.authToken, userId);
     if (_res) {
-      if (_res?.data?.cart?.some((item) => item.courseSlug === courseSlug)) {
+      if (
+        _res?.data?.cart?.some(
+          (item: CoursedetailsProps) => item.courseSlug === courseSlug
+        )
+      ) {
         setCartCourseExists(true);
       }
     }
@@ -53,7 +63,7 @@ const Searchcard = ({
     if (_res) {
       if (
         _res?.data?.coursesEnrolled?.some(
-          (item) => item.courseSlug === courseSlug
+          (item: CoursedetailsProps) => item.courseSlug === courseSlug
         )
       ) {
         setCoursePurchased(true);
@@ -63,16 +73,22 @@ const Searchcard = ({
 
   const addCourseToCart = async () => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
-      const _res = await postAddCart(cookie?.authToken, _data?._id, courseSlug);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
+      const _res = await postAddCart(
+        cookie?.authToken,
+        _data?._id!,
+        courseSlug
+      );
       if (_res) {
         successHandler("Added to cart successfully! 🎉");
-        courseExistsInCart(_data?._id);
+        courseExistsInCart(_data?._id!);
       }
     }
   };
 
-  let sanitizedCourseDescription;
+  let sanitizedCourseDescription: string | undefined = "";
   if (description) {
     sanitizedCourseDescription = sanitizedHtmlText(description);
   }

@@ -8,7 +8,7 @@ import {
 } from "../shared";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useCookies } from "react-cookie";
-import { CoursedetailsProps } from "../../utils/interface";
+import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 
 type GiftCourseInputs = {
   recipientName: string;
@@ -31,7 +31,7 @@ const GiftcourseComponent = (): JSX.Element => {
 
   //   TODO: To replace this api call with Redux store, remove query param dependency
   const fetchCourseDetails = async () => {
-    const _res = await getCourseDetails(params.courseSlug);
+    const _res = await getCourseDetails(params.courseSlug!);
     if (_res) {
       setCourseDetailsData(_res.data);
     }
@@ -39,12 +39,12 @@ const GiftcourseComponent = (): JSX.Element => {
 
   const addCourseToCart = async (data: any) => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _data: UserDataProps | null = JSON.parse(localStorage.getItem("userData")!);
       localStorage.setItem("giftCourseData", JSON.stringify(data));
       const _res = await postAddCart(
         cookie?.authToken,
-        _data?._id,
-        params?.courseSlug,
+        _data?._id!,
+        params?.courseSlug!,
         true,
         data.recipientEmail
       );
@@ -101,7 +101,6 @@ const GiftcourseComponent = (): JSX.Element => {
                   </span>
                 </label>
                 <input
-                  name="recipientName"
                   aria-label="Recipient Name"
                   className="bg-white focus:outline-none border-black border border-1 p-3 text-base font-normal w-full mt-1"
                   type="text"
@@ -128,7 +127,6 @@ const GiftcourseComponent = (): JSX.Element => {
                   </span>
                 </label>
                 <input
-                  name="recipientEmail"
                   aria-label="Recipient Email"
                   className="bg-white focus:outline-none border-black border border-1 p-3 text-base font-normal w-full mt-1"
                   type="email"
@@ -152,7 +150,6 @@ const GiftcourseComponent = (): JSX.Element => {
                   <span>Your Message</span>
                 </label>
                 <textarea
-                  name="message"
                   aria-label="message"
                   className="bg-white focus:outline-none border-black border border-1 p-3 text-base font-normal w-full mt-1"
                   placeholder="Hey there! I am gifting you this course..."

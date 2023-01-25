@@ -1,5 +1,6 @@
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
-const NextArrow = (props): JSX.Element => {
+import { CarouselArrowProps } from "../../utils/interface";
+const NextArrow = (props: CarouselArrowProps): JSX.Element => {
   const { onClick } = props;
   return (
     <div
@@ -11,7 +12,7 @@ const NextArrow = (props): JSX.Element => {
   );
 };
 
-const PrevArrow = (props): JSX.Element => {
+const PrevArrow = (props: CarouselArrowProps): JSX.Element => {
   const { onClick } = props;
   return (
     <div

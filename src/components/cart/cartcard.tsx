@@ -4,10 +4,10 @@ import MarkdownView from "react-showdown";
 import StarRatings from "react-star-ratings";
 import { patchUserCart, successHandler } from "../../utils/api";
 import { sanitizedHtmlText, truncateText } from "../../utils/functions";
-import { CartcardProps } from "../../utils/interface";
+import { CartcardProps, UserDataProps } from "../../utils/interface";
 
 const Cartcard = ({
-  id,
+  _id,
   imageurl,
   title,
   courseSlug,
@@ -23,7 +23,7 @@ const Cartcard = ({
 }: CartcardProps): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
 
-  let sanitizedCourseDescription;
+  let sanitizedCourseDescription: string | undefined = "";
   if (description) {
     sanitizedCourseDescription = sanitizedHtmlText(description);
   }
@@ -32,10 +32,10 @@ const Cartcard = ({
 
   const removeCartItem = async () => {
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _data: UserDataProps | null = JSON.parse(localStorage.getItem("userData")!);
       const _res = await patchUserCart(
         cookie?.authToken,
-        _data?._id,
+        _data?._id!,
         courseSlug
       );
       if (_res) {
@@ -47,7 +47,7 @@ const Cartcard = ({
   return (
     <>
       <div
-        key={id}
+        key={_id}
         className="w-full flex flex-col my-2 h-full lg:h-44 lg:flex-row pt-3 pb-6 border border-gray-300"
       >
         <img className="mx-auto px-1" src={imageurl} alt={title} />

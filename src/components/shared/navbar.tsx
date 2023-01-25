@@ -12,7 +12,10 @@ import {
   getUserCart,
   successHandler,
 } from "../../utils/api";
-import { CoursecardProps } from "../../utils/interface";
+import {
+  CoursecardProps,
+  UserDataProps,
+} from "../../utils/interface";
 import SpinnerloaderComponent from "./spinnerloader";
 
 const Navbar = (): JSX.Element => {
@@ -44,9 +47,11 @@ const Navbar = (): JSX.Element => {
   useEffect(() => {
     if (cookie?.authToken) {
       setIsUserLoggedIn(true);
-      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
       setUserData(_data);
-      fetchCartData(cookie?.authToken, _data?._id);
+      fetchCartData(cookie?.authToken, _data?._id!);
     }
   }, []);
 
@@ -64,7 +69,7 @@ const Navbar = (): JSX.Element => {
     }
   }, [debouncedQuery]);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any): void => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
       navigate(`/search?query=${e.target.value}`);
@@ -225,7 +230,7 @@ const Navbar = (): JSX.Element => {
                       return (
                         <a href={`/coursedetails/${item.courseSlug}`}>
                           <div
-                            key={item.id}
+                            key={item._id}
                             className="flex flex-row items-center bg-white animate-fadeIn hover:bg-gray-100 p-1"
                           >
                             <img

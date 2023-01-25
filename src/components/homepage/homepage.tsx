@@ -14,6 +14,7 @@ import { CategorytopicsComponent, Coursecardloader } from ".";
 import { useContext, useEffect, useState } from "react";
 import { getCourses, getUserProfile } from "../../utils/api";
 import { useCookies } from "react-cookie";
+import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 
 const Homepage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
@@ -45,9 +46,11 @@ const Homepage = (): JSX.Element => {
   useEffect(() => {
     fetchCourses();
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
       setUserData(_data);
-      fetchPurchasedItems(cookie?.authToken, _data?._id);
+      fetchPurchasedItems(cookie?.authToken, _data?._id!);
     }
   }, []);
 
@@ -99,12 +102,15 @@ const Homepage = (): JSX.Element => {
         <h1 className="mb-4">Students are viewing</h1>
         {courseDataLoaded ? (
           <Slider {...settings}>
-            {courseCardsData?.map((data) => {
+            {courseCardsData?.map((data: CoursedetailsProps) => {
               return (
-                <div key={data?._id} className="px-2 animate-fadeIn hover:drop-shadow-sm">
+                <div
+                  key={data?._id}
+                  className="px-2 animate-fadeIn hover:drop-shadow-sm"
+                >
                   <CoursecardComponent
                     key={data?._id}
-                    id={data?._id}
+                    _id={data?._id}
                     imageurl={data?.imageurl}
                     title={data?.title}
                     courseSlug={data?.courseSlug}
@@ -139,19 +145,21 @@ const Homepage = (): JSX.Element => {
       {isUserLoggedIn && (
         <>
           <div className="py-10 px-4 lg:px-44 font-bold text-2xl">
-            <h1 className="mb-4">
-              Let's start learning, {userData?.fullName}!
-            </h1>
+            {purchasedCardsData.length > 0 && (
+              <h1 className="mb-4">
+                Let's start learning, {userData?.fullName}!
+              </h1>
+            )}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               {purchasedCardsLoaded ? (
                 <>
-                  {purchasedCardsData?.map((data) => {
+                  {purchasedCardsData?.map((data: CoursedetailsProps) => {
                     return (
                       <>
                         <div key={data?._id} className="px-2 animate-fadeIn">
                           <CoursecardComponent
                             key={data?._id}
-                            id={data?._id}
+                            _id={data?._id}
                             imageurl={data?.imageurl}
                             title={data?.title}
                             courseSlug={data?.courseSlug}

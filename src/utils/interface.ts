@@ -1,5 +1,5 @@
 export interface CoursedetailsProps {
-  id: number;
+  _id: string;
   imageurl: string;
   title: string;
   courseSlug: string;
@@ -21,7 +21,7 @@ export interface CoursedetailsProps {
 }
 
 export interface CartcardProps {
-  id: number;
+  _id: string;
   imageurl: string;
   title: string;
   courseSlug: string;
@@ -37,6 +37,7 @@ export interface CartcardProps {
 }
 
 export interface CoursepreviewProps {
+  oldPrice: number;
   price: number;
   imageurl: string;
   courseSlug: string;
@@ -44,7 +45,7 @@ export interface CoursepreviewProps {
 }
 
 export interface SearchcardProps {
-  id: string;
+  _id: string;
   imageurl: string;
   title: string;
   courseSlug: string;
@@ -60,7 +61,7 @@ export interface SearchcardProps {
 }
 
 export interface CoursecardProps {
-  id: string;
+  _id: string;
   courseSlug: string;
   imageurl: string;
   title: string;
@@ -72,4 +73,21 @@ export interface CoursecardProps {
   category: string;
   tag?: string;
   level?: string;
+}
+
+export interface UserDataProps {
+  email: string;
+  fullName: string;
+  imageurl?: string;
+  _id: string;
+}
+
+export interface CarouselArrowProps {
+  onClick?: () => void;
+}
+
+export interface GiftCourseProps {
+  recipientName: string;
+  recipientEmail: string;
+  message?: string;
 }

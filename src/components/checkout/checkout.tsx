@@ -18,11 +18,15 @@ import {
   baseUrl,
   expiration_date_regex,
   indian_states_ut,
-  upi_vpa_regex,
 } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { Checkoutordersloader } from ".";
+import {
+  CoursedetailsProps,
+  GiftCourseProps,
+  UserDataProps,
+} from "../../utils/interface";
 
 type CardPaymentInputs = {
   nameOnCard: string;
@@ -35,6 +39,7 @@ const Checkoutpage = (): JSX.Element => {
   const [selectedPaymentMode, setSelectedPaymentMode] = useState<string>("");
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCardsData, setCartCardsData] = useState<any>([]);
+  const [formData, setFormData] = useState<any>();
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const [cartOldPrice, setCartOldPrice] = useState<number>(0);
   const [cartNewPrice, setCartNewPrice] = useState<number>(0);
@@ -45,7 +50,7 @@ const Checkoutpage = (): JSX.Element => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (cookie?.authToken) {
-      const _data = JSON.parse(localStorage.getItem("userData"));
+      const _data = JSON.parse(localStorage.getItem("userData")!);
       fetchCartItems(cookie?.authToken, _data?._id);
       setUserEmail(_data?.email);
     }
@@ -79,7 +84,7 @@ const Checkoutpage = (): JSX.Element => {
     }
   };
 
-  function loadScript(src) {
+  function loadScript(src: any) {
     return new Promise((resolve) => {
       const script = document.createElement("script");
       script.src = src;
@@ -97,7 +102,7 @@ const Checkoutpage = (): JSX.Element => {
     setSelectedPaymentMode(e.target.value);
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (_data?: any) => {
     try {
       if (cookie?.authToken && selectedPaymentMode) {
         let paymentMethod;
@@ -112,7 +117,7 @@ const Checkoutpage = (): JSX.Element => {
           paymentMethod
         );
         if (_res) {
-          initPayment(_res?.data);
+          initPayment(_res?.data, _data);
         }
       } else {
         toast.error("Please select a payment method before proceeding!", {
@@ -131,7 +136,7 @@ const Checkoutpage = (): JSX.Element => {
     }
   };
 
-  const initPayment = async (data) => {
+  const initPayment = async (data: any, _data: any) => {
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
@@ -140,8 +145,9 @@ const Checkoutpage = (): JSX.Element => {
       alert("Error loading Razorpay SDK! Please try again later!");
       return;
     }
-    const KEY_ID: string = process.env.REACT_APP_RAZORPAY_KEY_ID;
-    const options = {
+    const KEY_ID: string | undefined = process.env.REACT_APP_RAZORPAY_KEY_ID;
+
+    const options: any = {
       key: KEY_ID,
       amount: cartNewPrice,
       currency: "INR",
@@ -153,7 +159,7 @@ const Checkoutpage = (): JSX.Element => {
       image:
         "https://user-images.githubusercontent.com/60519359/212956791-233d6fe1-933e-4b6e-ba1c-318a9a6853a6.png",
       order_id: data.id,
-      handler: async (response) => {
+      handler: async (response: any) => {
         try {
           const verifyUrl = `${baseUrl}/payment/verify`;
           const _res = await axios({
@@ -164,24 +170,25 @@ const Checkoutpage = (): JSX.Element => {
             },
             data: response,
           });
-          successHandler("Please wait while we are verifying your payment")
           if (_res?.data?.success) {
-            const _data = JSON.parse(localStorage.getItem("userData"));
-            const _giftCoursedata = JSON.parse(
-              localStorage.getItem("giftCourseData")
+            const _data: UserDataProps | null = JSON.parse(
+              localStorage.getItem("userData")!
+            );
+            const _giftCoursedata: GiftCourseProps = JSON.parse(
+              localStorage.getItem("giftCourseData")!
             );
             if (_giftCoursedata) {
               const _resGift = await postGiftedCourseEnroll(
                 cookie?.authToken,
-                _data?._id,
+                _data?._id!,
                 cartCardsData,
                 _giftCoursedata?.recipientEmail
               );
               successHandler(_resGift?.data?.message);
               await postGiftSuccessMail(
                 cookie?.authToken,
-                _data?.fullName,
-                _data?.email,
+                _data?.fullName!,
+                _data?.email!,
                 _giftCoursedata?.recipientName,
                 _giftCoursedata?.recipientEmail,
                 cartCardsData,
@@ -192,17 +199,17 @@ const Checkoutpage = (): JSX.Element => {
             } else {
               const res = await postCourseEnroll(
                 cookie?.authToken,
-                _data?._id,
+                _data?._id!,
                 cartCardsData
               );
               if (res) {
                 successHandler(_res?.data?.message);
-                await postPurchaseSuccessMail(
-                  cookie?.authToken,
-                  _data?.fullName,
-                  _data?.email,
-                  cartCardsData
-                );
+                // await postPurchaseSuccessMail(
+                //   cookie?.authToken,
+                //   _data?.fullName!,
+                //   _data?.email!,
+                //   cartCardsData
+                // );
                 navigate("/checkoutsuccess");
               }
             }
@@ -229,6 +236,25 @@ const Checkoutpage = (): JSX.Element => {
       },
     };
 
+    switch (selectedPaymentMode) {
+      case "upi": {
+        if (_data) {
+          options.prefill["vpa"] = _data?.upiID;
+        }
+        break;
+      }
+      case "card": {
+        if (_data) {
+          options.prefill["method"] = "card";
+          options.prefill["name"] = _data?.nameOnCard;
+          options.prefill["card[number]"] = _data?.cardNumber;
+          options.prefill["card[expiry]"] = _data?.expirationDate;
+          options.prefill["card[cvv]"] = _data?.cvv;
+        }
+        break;
+      }
+    }
+
     const rzpObject = (window as any).Razorpay(options);
     rzpObject.open();
   };
@@ -240,7 +266,8 @@ const Checkoutpage = (): JSX.Element => {
   } = useForm<CardPaymentInputs | any>();
   const onSubmit: SubmitHandler<CardPaymentInputs | any> = (data) => {
     if (data) {
-      handleCheckout();
+      setFormData(data);
+      handleCheckout(data);
     }
   };
 
@@ -384,7 +411,6 @@ const Checkoutpage = (): JSX.Element => {
                             <span>Name on card</span>
                           </label>
                           <input
-                            name="nameOnCard"
                             type="text"
                             placeholder="Name on card"
                             className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
@@ -392,7 +418,7 @@ const Checkoutpage = (): JSX.Element => {
                           />
                           {errors.nameOnCard && (
                             <span className="text-red-500 font-light text-xs">
-                              This field is required!
+                              This field is required, or the input is malformed
                             </span>
                           )}
                         </div>
@@ -405,7 +431,6 @@ const Checkoutpage = (): JSX.Element => {
                             <span>Card number</span>
                           </label>
                           <input
-                            name="cardNumber"
                             type="text"
                             placeholder="0000 0000 0000 0000"
                             onKeyUp={(e: any) => {
@@ -422,7 +447,7 @@ const Checkoutpage = (): JSX.Element => {
                           />
                           {errors.cardNumber && (
                             <span className="text-red-500 font-light text-xs">
-                              This field is required!
+                              This field is required, or the input is malformed.
                             </span>
                           )}
                         </div>
@@ -436,7 +461,6 @@ const Checkoutpage = (): JSX.Element => {
                               <span>CVV / CVC</span>
                             </label>
                             <input
-                              name="cvv"
                               type="password"
                               placeholder="CVV / CVC"
                               className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
@@ -448,7 +472,8 @@ const Checkoutpage = (): JSX.Element => {
                             />
                             {errors.cvv && (
                               <span className="text-red-500 font-light text-xs">
-                                This field is required!
+                                This field is required, or the input is
+                                malformed.
                               </span>
                             )}
                           </div>
@@ -461,7 +486,6 @@ const Checkoutpage = (): JSX.Element => {
                               <span>Expiration Date</span>
                             </label>
                             <input
-                              name="expirationDate"
                               type="text"
                               placeholder="MM/YY"
                               className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
@@ -472,7 +496,8 @@ const Checkoutpage = (): JSX.Element => {
                             />
                             {errors.expirationDate && (
                               <span className="text-red-500 font-light text-xs">
-                                This field is required!
+                                This field is required, or the input is
+                                malformed.
                               </span>
                             )}
                           </div>
@@ -534,7 +559,6 @@ const Checkoutpage = (): JSX.Element => {
                           </label>
 
                           <input
-                            name="upiID"
                             type="text"
                             placeholder="johndoe@okbank or 9876543210@okbank"
                             className="w-full text-base font-normal px-4 py-2 focus:outline-none border border-black"
@@ -668,7 +692,7 @@ const Checkoutpage = (): JSX.Element => {
             <h3 className="mb-4 mt-8 font-bold text-xl text-heading">Order</h3>
             {cartDataLoaded ? (
               <>
-                {cartCardsData?.map((item) => {
+                {cartCardsData?.map((item: CoursedetailsProps) => {
                   return (
                     <>
                       <Link to={`/coursedetails/${item?.courseSlug}`}>

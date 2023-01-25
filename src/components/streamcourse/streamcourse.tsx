@@ -17,8 +17,8 @@ const StreamcourseComponent = (): JSX.Element => {
     fetchCourseDetails();
   }, []);
 
-  const fetchCourseDetails = async () => { 
-    const _res = await getCourseDetails(params.courseSlug);
+  const fetchCourseDetails = async () => {
+    const _res = await getCourseDetails(params.courseSlug!);
     if (_res) {
       setCourseDetailsData(_res.data);
     }
@@ -26,7 +26,7 @@ const StreamcourseComponent = (): JSX.Element => {
 
   const params = useParams();
 
-  let sanitizedCourseDescription: string;
+  let sanitizedCourseDescription: string | undefined = "";
 
   if (courseDetailsData) {
     sanitizedCourseDescription = sanitizedHtmlText(
@@ -46,7 +46,7 @@ const StreamcourseComponent = (): JSX.Element => {
       <div className="w-full flex flex-col lg:flex-col">
         <div className="w-full lg:w-9/12">
           <div className="video-responsive">
-            {streamable_courses.includes(courseDetailsData?.courseSlug) ? (
+            {streamable_courses.includes(courseDetailsData?.courseSlug!) ? (
               <video id="videoPlayer" controls={true}>
                 <source
                   src={`${backendBaseUrl}/courses/stream/coursevideo/${params?.courseSlug}`}

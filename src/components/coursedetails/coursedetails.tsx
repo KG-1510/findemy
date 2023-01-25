@@ -48,7 +48,7 @@ const Coursedetailspage = (): JSX.Element => {
   }, []);
 
   const fetchCourseDetails = async () => {
-    const _res = await getCourseDetails(params.courseSlug);
+    const _res = await getCourseDetails(params.courseSlug!);
     if (_res) {
       setCourseDetailsData(_res.data);
     } else {
@@ -56,8 +56,8 @@ const Coursedetailspage = (): JSX.Element => {
     }
   };
 
-  let sanitizedInstructorDescription;
-  let sanitizedCourseDescription;
+  let sanitizedInstructorDescription: string | undefined = "";
+  let sanitizedCourseDescription: string | undefined = "";
 
   if (courseDetailsData) {
     sanitizedInstructorDescription = sanitizedHtmlText(
@@ -119,9 +119,10 @@ const Coursedetailspage = (): JSX.Element => {
           </>
         )}
         <CoursepreviewComponent
-          price={courseDetailsData?.price}
-          imageurl={courseDetailsData?.imageurl}
-          courseSlug={courseDetailsData?.courseSlug}
+          price={courseDetailsData?.price!}
+          oldPrice={courseDetailsData?.oldPrice!}
+          imageurl={courseDetailsData?.imageurl!}
+          courseSlug={courseDetailsData?.courseSlug!}
           isGiftedCourse={courseDetailsData?.isGiftedCourse}
         />
         <div className="bg-primaryblack w-full text-white">

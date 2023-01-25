@@ -3,7 +3,7 @@ import StarRatings from "react-star-ratings";
 import { CoursecardProps } from "../../utils/interface";
 
 const Coursecard = ({
-  id,
+  _id,
   courseSlug,
   imageurl,
   title,
@@ -18,7 +18,7 @@ const Coursecard = ({
     <>
       <Link to={`/coursedetails/${courseSlug}`}>
         <div
-          key={id}
+          key={_id}
           className="flex flex-col w-full items-start space-y-[1px] hover:cursor-pointer hover:opacity-90"
         >
           <img
