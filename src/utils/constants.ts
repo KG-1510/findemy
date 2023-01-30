@@ -1,13 +1,18 @@
 export const baseUrl: string | undefined = process.env.REACT_APP_BACKEND_BASE_URL;
 export const clientBaseUrl: string | undefined = process.env.REACT_APP_FRONTEND_BASE_URL;
+
 export const password_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+
 export const expiration_date_regex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+
 export const streamable_courses: string[] = [
   "the-complete-web-development-bootcamp",
   "the-complete-python-bootcamp-from-zero-to-hero",
 ];
+
 export const upi_vpa_regex =
   /[a-zA-Z0-9\\.\\-]{2,256}\\@[a-zA-Z][a-zA-Z]{2,64}/;
+
 export const indian_states_ut: string[] = [
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -46,3 +51,30 @@ export const indian_states_ut: string[] = [
   "Lakshadweep",
   "Puducherry",
 ];
+
+export const category_list: string[] = [
+  "Python",
+  "Web Development",
+  "Machine Learning",
+  "Financial Analysis",
+  "SQL",
+  "PMP",
+  "AWS Certification",
+  "Ethical Hacking",
+  "Cyber Security",
+  "Photoshop",
+  "Graphic Design",
+  "Drawing"
+];
+
+export const tag_list: string[] = [
+  "Bestseller",
+  "Coding Exercises"
+]
+
+export const level_list: string[] = [
+  "Beginner",
+  "All levels",
+  "Intermediate",
+  "Expert"
+]

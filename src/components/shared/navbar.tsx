@@ -12,10 +12,7 @@ import {
   getUserCart,
   successHandler,
 } from "../../utils/api";
-import {
-  CoursecardProps,
-  UserDataProps,
-} from "../../utils/interface";
+import { CoursecardProps, UserDataProps } from "../../utils/interface";
 import SpinnerloaderComponent from "./spinnerloader";
 
 const Navbar = (): JSX.Element => {
@@ -119,9 +116,19 @@ const Navbar = (): JSX.Element => {
                         My learnings
                       </p>
                     </Link>
+                    <Link to={"/myteachings"}>
+                      <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
+                        My teachings
+                      </p>
+                    </Link>
                     <Link to={"/cart"}>
                       <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
                         My cart
+                      </p>
+                    </Link>
+                    <Link to={"/teach"}>
+                      <p className="text-lg font-light hover:text-findemypurple cursor-pointer py-1">
+                        Teach on Findemy
                       </p>
                     </Link>
                     <a
@@ -275,6 +282,16 @@ const Navbar = (): JSX.Element => {
 
           {isUserLoggedIn && (
             <>
+              <Link to={"/teach"}>
+                <div className="hidden lg:block relative">
+                  <span className="absolute -top-1 -right-1 bg-findemypurple animate-pulse text-xs text-white p-0.5 rounded-full">
+                    New!
+                  </span>
+                  <span className="hidden md:flex h-10 px-2 items-center text-sm font-light mx-2 justify-center hover:bg-[#F5F5F5]">
+                    Teach on Findemy
+                  </span>
+                </div>
+              </Link>
               <Link to={"/mylearnings"}>
                 <span className="hidden md:flex h-10 px-2 items-center text-sm font-light mx-2 justify-center hover:bg-[#F5F5F5]">
                   My learnings
@@ -355,6 +372,11 @@ const Navbar = (): JSX.Element => {
                       <Link to={"/mylearnings"}>
                         <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
                           My learnings
+                        </p>
+                      </Link>
+                      <Link to={"/myteachings"}>
+                        <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
+                          My teachings
                         </p>
                       </Link>
                       <Link to={"/cart"}>

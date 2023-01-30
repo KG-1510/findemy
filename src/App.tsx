@@ -18,6 +18,9 @@ import { StreamcourseComponent } from "./components/streamcourse";
 import ProtectedRoute from "./protectedroutes";
 import "react-toastify/dist/ReactToastify.css";
 import { GiftcourseComponent } from "./components/giftcourse";
+import { TeachpageComponent } from "./components/teach";
+import Uploadcoursepage from "./components/teach/uploadcourse";
+import { MyteachingsComponent } from "./components/myteachings";
 
 export const AuthContext = createContext<any>(null);
 
@@ -62,6 +65,15 @@ function App() {
               <Route
                 path="/mylearnings"
                 element={<MylearningsComponent />}
+              ></Route>
+              <Route
+                path="/myteachings"
+                element={<MyteachingsComponent />}
+              ></Route>
+              <Route path="/teach" element={<TeachpageComponent />}></Route>
+              <Route
+                path="/teach/uploadcourse"
+                element={<Uploadcoursepage />}
               ></Route>
               <Route
                 path="/streamcourse/:courseSlug"

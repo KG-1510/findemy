@@ -70,7 +70,7 @@ export const getUserProfile = async (authToken: string, userId: string) => {
       });
       return _res.data;
     }
-  } catch (err:any) {
+  } catch (err: any) {
     if (err.response.status === 401) {
       return err;
     }
@@ -288,6 +288,29 @@ export const postGiftSuccessMail = async (
     });
     return _res.data;
   } catch (err) {
+    errorHandler(err);
+    return false;
+  }
+};
+
+export const postCourseUpload = async (authToken: string, data: any) => {
+  try {
+    if (authToken) {
+      const _res = await axios({
+        method: "POST",
+        url: `${baseUrl}/courses/upload`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        data: data,
+      });
+      return _res.data;
+    }
+  } catch (err: any) {
+    console.log(err);
+    if (err.response.status === 401) {
+      return err;
+    }
     errorHandler(err);
     return false;
   }
