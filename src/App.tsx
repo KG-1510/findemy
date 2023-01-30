@@ -52,11 +52,11 @@ function App() {
                 element={<CheckoutpageComponent />}
               ></Route>
               <Route
-                path="/checkoutsuccess"
+                path="/checkoutsuccess/:txnId"
                 element={<Checkoutsuccesspage />}
               ></Route>
               <Route
-                path="/giftingcheckoutsuccess"
+                path="/giftingcheckoutsuccess/:txnId"
                 element={<Checkoutgiftingsuccesspage />}
               ></Route>
               <Route

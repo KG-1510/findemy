@@ -1,9 +1,22 @@
 import Lottie from "react-lottie";
 import { FooterComponent, NavbarComponent } from "../shared";
 import animationData from "../../utils/checkout-success.json";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 const Checkoutgiftingsuccesspage = (): JSX.Element => {
+  const params = useParams();
+  const navigate = useNavigate();
+
+  const [cookie, _] = useCookies(["authToken"]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (cookie?.authToken && params.txnId !== cookie?.authToken) {
+      navigate("/");
+    }
+  }, []);
+
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -27,7 +40,7 @@ const Checkoutgiftingsuccesspage = (): JSX.Element => {
           📧 An Email for course purchase confirmation has been sent to the
           recipient Email ID!
         </p>
-        <Link  to={"/"}>
+        <Link to={"/"}>
           <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
             Keep Shopping
           </button>

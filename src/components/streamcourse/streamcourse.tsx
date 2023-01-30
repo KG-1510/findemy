@@ -63,7 +63,7 @@ const StreamcourseComponent = (): JSX.Element => {
             )}
           </div>
         </div>
-        <div className="block lg:fixed right-0 top-28 w-full lg:w-3/12 h-auto lg:h-screen bg-gray-50">
+        <div className="block lg:absolute right-0 top-28 w-full lg:w-3/12 h-auto lg:h-screen bg-gray-50">
           <h1 className="bg-gray-200 px-4 py-6 border-b text-primaryblack">
             Course sections
           </h1>

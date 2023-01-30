@@ -1,4 +1,5 @@
 import StarRatings from "react-star-ratings";
+import { Helmet } from "react-helmet";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AiOutlineFieldTime } from "react-icons/ai";
 import { VscGlobe } from "react-icons/vsc";
@@ -15,7 +16,7 @@ import { CoursepreviewComponent } from ".";
 import { useEffect, useState } from "react";
 import { getCourseDetails } from "../../utils/api";
 import MarkdownView from "react-showdown";
-import { sanitizedHtmlText } from "../../utils/functions";
+import { sanitizedHtmlText, truncateText } from "../../utils/functions";
 import { CoursedetailsProps } from "../../utils/interface";
 
 const Coursedetailspage = (): JSX.Element => {
@@ -70,6 +71,44 @@ const Coursedetailspage = (): JSX.Element => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {`${courseDetailsData?.title} - Findemy - Learn Anytime, Anywhere!`}
+        </title>
+        <meta
+          name="description"
+          content="Findemy is an online learning platform enabling people around the world to learn anytime, anywhere at an affordable cost!"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://findemy.netlify.app/coursedetails/${courseDetailsData?.courseSlug}`}
+        />
+        <meta
+          property="og:title"
+          content={`${courseDetailsData?.title} - Findemy - Learn Anytime, Anywhere!`}
+        />
+        <meta
+          property="og:description"
+          content="Findemy is an online learning platform enabling people around the world to learn anytime, anywhere at an affordable cost!"
+        />
+        <meta property="og:image" content={courseDetailsData?.imageurl} />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:url"
+          content={`https://findemy.netlify.app/coursedetails/${courseDetailsData?.courseSlug}`}
+        />
+        <meta
+          property="twitter:title"
+          content={`${courseDetailsData?.title} - Findemy - Learn Anytime, Anywhere!`}
+        />
+        <meta
+          property="twitter:description"
+          content="Findemy is an online learning platform enabling people around the world to learn anytime, anywhere at an affordable cost!"
+        />
+        <meta property="twitter:image" content={courseDetailsData?.imageurl} />
+      </Helmet>
+
       <NavbarComponent />
       <div className="w-full">
         {isTitleBarVisible && (

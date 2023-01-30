@@ -149,7 +149,7 @@ const Coursepreview = ({
           isPreviewFixed
             ? `lg:fixed z-50 top-20 lg:animate-fadeIn`
             : `lg:absolute z-40 ${
-                isCollidedFooter ? "bottom-96 mb-80" : "top-28"
+                isCollidedFooter ? "bottom-96 mb-96" : "top-28"
               }`
         } right-20 bg-primaryblack lg:bg-white text-white lg:text-primaryblack w-full lg:w-3/12 h-auto lg:h-72 border-none lg:border lg:border-white lg:drop-shadow-md`}
       >

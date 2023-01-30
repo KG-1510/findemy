@@ -195,7 +195,7 @@ const Checkoutpage = (): JSX.Element => {
                 _giftCoursedata?.message
               );
               localStorage.removeItem("giftCourseData");
-              navigate("/giftingcheckoutsuccess");
+              navigate(`/giftingcheckoutsuccess/${cookie?.authToken}`);
             } else {
               const res = await postCourseEnroll(
                 cookie?.authToken,
@@ -204,13 +204,13 @@ const Checkoutpage = (): JSX.Element => {
               );
               if (res) {
                 successHandler(_res?.data?.message);
-                // await postPurchaseSuccessMail(
-                //   cookie?.authToken,
-                //   _data?.fullName!,
-                //   _data?.email!,
-                //   cartCardsData
-                // );
-                navigate("/checkoutsuccess");
+                await postPurchaseSuccessMail(
+                  cookie?.authToken,
+                  _data?.fullName!,
+                  _data?.email!,
+                  cartCardsData
+                );
+                navigate(`/checkoutsuccess/${cookie?.authToken}`);
               }
             }
           }

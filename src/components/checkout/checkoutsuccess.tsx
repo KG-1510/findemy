@@ -1,7 +1,7 @@
 import Lottie from "react-lottie";
 import { FooterComponent, NavbarComponent } from "../shared";
 import animationData from "../../utils/checkout-success.json";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { getUserProfile } from "../../utils/api";
@@ -9,6 +9,9 @@ import Checkoutordersloader from "./checkoutordersloader";
 import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
 
 const Checkoutsuccesspage = (): JSX.Element => {
+  const params = useParams();
+  const navigate = useNavigate();
+
   const [cookie, _] = useCookies(["authToken"]);
   const [purchasedCardsData, setPurchasedCardsData] = useState<any>([]);
   const [purchasedCardsLoaded, setPurchasedCardsLoaded] =
@@ -24,9 +27,13 @@ const Checkoutsuccesspage = (): JSX.Element => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (cookie?.authToken) {
-      const _data: UserDataProps | null = JSON.parse(localStorage.getItem("userData")!);
+    if (cookie?.authToken && params.txnId === cookie?.authToken) {
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
       fetchPurchasedItems(cookie?.authToken, _data?._id!);
+    } else {
+      navigate("/");
     }
   }, []);
 
