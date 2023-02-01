@@ -88,7 +88,7 @@ export const getUserCart = async (authToken: string, userId: string) => {
       return _res.data;
     }
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     if (err.response.status === 401) {
       return err;
     }
@@ -118,7 +118,7 @@ export const patchUserCart = async (
       return _res.data;
     }
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     if (err.response.status === 401) {
       return err;
     }
@@ -152,7 +152,7 @@ export const postAddCart = async (
       return _res.data;
     }
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     if (err.response.status === 401) {
       return err;
     }
@@ -307,7 +307,7 @@ export const postCourseUpload = async (authToken: string, data: any) => {
       return _res.data;
     }
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
     if (err.response.status === 401) {
       return err;
     }
@@ -317,7 +317,7 @@ export const postCourseUpload = async (authToken: string, data: any) => {
 };
 
 export const errorHandler = (error?: AxiosError | any) => {
-  console.log(error);
+  // console.log(error);
   let errMessage: string = "😐 Oops! Something went wrong!";
 
   if (error.status !== 500) {

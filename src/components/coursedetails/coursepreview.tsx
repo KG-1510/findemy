@@ -226,12 +226,14 @@ const Coursepreview = ({
                   <AiOutlineHeart className="h-6 w-6" />
                 </button>
               </div>
-              <button
-                onClick={() => handleBuyNow()}
-                className="border border-white lg:border-primaryblack text-lg h-10 font-bold w-full mt-2 hover:bg-[#F5F5F5]"
-              >
-                Buy now
-              </button>
+              {!cartCourseExists && (
+                <button
+                  onClick={() => handleBuyNow()}
+                  className="border border-white lg:border-primaryblack text-lg h-10 font-bold w-full mt-2 hover:bg-[#F5F5F5]"
+                >
+                  Buy now
+                </button>
+              )}
               <p className="text-xs font-light w-full text-center my-3">
                 {" "}
                 30-Day Money-Back Guarantee

@@ -84,17 +84,22 @@ const Searchpage = (): JSX.Element => {
           </div>
         )}
         {appliedFilters.length > 0 && (
-          <p className="text-base font-light animate-fadeIn">
-            {searchCardData?.length} results for filter - Level:{" "}
-            {appliedFilters?.map((item: string) => {
-              return (
-                <span className="font-semibold">
-                  {item}
-                  {", "}
-                </span>
-              );
-            })}
-          </p>
+          <>
+            <p className="text-base font-light animate-fadeIn">
+              {searchCardData?.length} results for filter - Level:{" "}
+              {appliedFilters?.map((item: string) => {
+                return (
+                  <span className="font-semibold">
+                    {item}
+                    {", "}
+                  </span>
+                );
+              })}
+            </p>
+            <button className="text-sm" onClick={() => setAppliedFilters([])}>
+              Clear all filters
+            </button>
+          </>
         )}
 
         <div className="flex min-h-screen flex-col lg:flex-row bg-gray-100 text-gray-800 mt-2 lg:mt-12">
@@ -108,6 +113,7 @@ const Searchpage = (): JSX.Element => {
                   id="beginner-checkbox"
                   name="course-filter"
                   value="Beginner"
+                  checked={appliedFilters.includes("Beginner")}
                   onChange={(e) => handleFilterChange(e)}
                 />
                 <label
@@ -124,6 +130,7 @@ const Searchpage = (): JSX.Element => {
                   id="all-levels-checkbox"
                   name="course-filter"
                   value="All levels"
+                  checked={appliedFilters.includes("All levels")}
                   onChange={(e) => handleFilterChange(e)}
                 />
                 <label
@@ -140,6 +147,7 @@ const Searchpage = (): JSX.Element => {
                   id="intermediate-checkbox"
                   name="course-filter"
                   value="Intermediate"
+                  checked={appliedFilters.includes("Intermediate")}
                   onChange={(e) => handleFilterChange(e)}
                 />
                 <label
@@ -156,6 +164,7 @@ const Searchpage = (): JSX.Element => {
                   id="expert-checkbox"
                   name="course-filter"
                   value="Expert"
+                  checked={appliedFilters.includes("Expert")}
                   onChange={(e) => handleFilterChange(e)}
                 />
                 <label

@@ -1,6 +1,6 @@
 import { AiOutlineSearch } from "react-icons/ai";
 import { BiCartAlt } from "react-icons/bi";
-import { VscGlobe } from "react-icons/vsc";
+import { GrClose } from "react-icons/gr";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,7 @@ const Navbar = (): JSX.Element => {
   const [cartCountLoaded, setCartCountLoaded] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<number>();
   const [debouncedQuery, setDebouncedQuery] = useState<string>();
+  const [searchValue, setSearchValue] = useState<string>();
   const [debouncedSearchResults, setDebouncedSearchResults] = useState<
     CoursecardProps[]
   >([]);
@@ -70,8 +71,16 @@ const Navbar = (): JSX.Element => {
     if (e.key === "Enter" && e.target.value !== "") {
       e.preventDefault();
       navigate(`/search?query=${e.target.value}`);
+      setDebouncedQuery("");
     } else {
       setDebouncedQuery(e.target.value);
+    }
+  };
+
+  const handleSearchClick = () => {
+    if (searchValue) {
+      navigate(`/search?query=${searchValue}`);
+      setDebouncedQuery("");
     }
   };
 
@@ -203,12 +212,21 @@ const Navbar = (): JSX.Element => {
         </>
       )}
       <nav className="sticky top-0 z-50 flex space-x-4 bg-white h-[4.4rem] shadow-lg text-center justify-between items-center px-4">
-        <span
-          className="flex md:hidden h-10 w-10 focus:outline-none items-center justify-center"
-          onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
-        >
-          <GiHamburgerMenu className="h-6 w-6" />
-        </span>
+        {showHamburgerMenu ? (
+          <span
+            className="flex animate-fadeIn md:hidden h-10 w-10 focus:outline-none items-center justify-center"
+            onClick={() => setShowHamburgerMenu(false)}
+          >
+            <GrClose className="h-6 w-6" />
+          </span>
+        ) : (
+          <span
+            className="flex animate-fadeIn md:hidden h-10 w-10 focus:outline-none items-center justify-center"
+            onClick={() => setShowHamburgerMenu(true)}
+          >
+            <GiHamburgerMenu className="h-6 w-6" />
+          </span>
+        )}
         <Link to={"/"}>
           <h2 className="text-3xl focus:outline-none font-bold hover:cursor-pointer">
             F<span className="text-findemypurple">i</span>ndemy
@@ -218,10 +236,19 @@ const Navbar = (): JSX.Element => {
           onSubmit={(e) => e.preventDefault()}
           className="hidden bg-[#f8fafb] md:flex border border-primaryblack rounded-3xl py-5 flex-1 h-1/2 items-center"
         >
-          <AiOutlineSearch className="h-5 mx-4 text-gray-400" />
+          <button
+            onClick={() => handleSearchClick()}
+            className="flex items-center justify-center rounded-full hover:bg-gray-300 h-8 w-8 mx-3"
+          >
+            <AiOutlineSearch className="text-gray-400" />
+          </button>
           <input
             type="search"
-            onKeyUp={(e) => handleSearch(e)}
+            onKeyUp={(e) => {
+              handleSearch(e);
+              // @ts-expect-error
+              setSearchValue(e.target.value);
+            }}
             aria-label="Search"
             placeholder="Search for anything"
             className="bg-transparent text-sm font-normal outline-none p-2 w-full"
@@ -330,7 +357,7 @@ const Navbar = (): JSX.Element => {
               </Link>
             </>
           )}
-          {isUserLoggedIn ? (
+          {isUserLoggedIn && (
             <>
               <button
                 onClick={() => setShowNavbarDrawer(!showNavbarDrawer)}
@@ -403,10 +430,6 @@ const Navbar = (): JSX.Element => {
                 </>
               )}
             </>
-          ) : (
-            <button className="border border-primaryblack w-10 flex items-center justify-center hover:bg-[#F5F5F5]">
-              <VscGlobe className="h-5 w-5" />
-            </button>
           )}
         </div>
       </nav>

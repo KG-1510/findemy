@@ -69,14 +69,11 @@ const Footer = (): JSX.Element => {
                 </a>
               </li>
               <li className="my-2">
-                <a
-                  href="https://www.udemy.com/teaching/?ref=teach_footer"
-                  target={"_blank"}
-                  rel="noreferrer"
-                  className="text-white font-light text-sm hover:text-findemypurple"
-                >
-                  Teach on Findemy
-                </a>
+                <Link to={"/teach"}>
+                  <p className="text-white font-light text-sm hover:text-findemypurple">
+                    Teach on Findemy
+                  </p>
+                </Link>
               </li>
               <li className="my-2">
                 <a
