@@ -42,6 +42,7 @@ export interface CoursepreviewProps {
   imageurl: string;
   courseSlug: string;
   isGiftedCourse?: string;
+  courseDetails?: CoursedetailsProps;
 }
 
 export interface SearchcardProps {
@@ -58,6 +59,7 @@ export interface SearchcardProps {
   category: string;
   tag?: string;
   level?: string;
+  courseData?: any;
 }
 
 export interface CoursecardProps {
@@ -90,4 +92,8 @@ export interface GiftCourseProps {
   recipientName: string;
   recipientEmail: string;
   message?: string;
+}
+
+export interface ICartInitialState {
+  cartData: CoursedetailsProps[];
 }

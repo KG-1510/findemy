@@ -14,6 +14,9 @@ import {
 } from "../../utils/api";
 import { CoursecardProps, UserDataProps } from "../../utils/interface";
 import SpinnerloaderComponent from "./spinnerloader";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../redux/store/store";
+import { fetchCourseToCartStore } from "../../redux/reducers/cart.reducer";
 
 const Navbar = (): JSX.Element => {
   const navigate = useNavigate();
@@ -34,10 +37,14 @@ const Navbar = (): JSX.Element => {
   const { isUserLoggedIn, setIsUserLoggedIn } = useContext(AuthContext);
   const [userData, setUserData] = useState<any>({});
 
+  const { cartData } = useAppSelector((store) => store.cart);
+  const dispatch = useDispatch();
+
   const fetchCartData = async (authToken: string, userId: string) => {
     const _res = await getUserCart(authToken, userId);
     if (_res) {
-      setCartCount(_res?.data?.cart?.length);
+      // setCartCount(_res?.data?.cart?.length);
+      dispatch(fetchCourseToCartStore(_res?.data?.cart));
       setCartCountLoaded(true);
     }
   };
@@ -332,9 +339,9 @@ const Navbar = (): JSX.Element => {
               <Link to={"/cart"}>
                 <span className="w-10 h-10 relative flex items-center justify-center hover:bg-[#F5F5F5]">
                   <BiCartAlt aria-label="cart" className="h-5 w-5" />
-                  {cartCount !== 0 && (
+                  {cartData.length !== 0 && (
                     <span className="absolute animate-fadeIn top-6 right-0 bg-findemypurple rounded-full text-xs font-light text-white h-4 w-4">
-                      {cartCount}
+                      {cartData.length}
                     </span>
                   )}
                 </span>
@@ -439,7 +446,7 @@ const Navbar = (): JSX.Element => {
         </div>
       </nav>
       {showSearchBarMobile && (
-        <div className="p-2 bg-white drop-shadow-md">
+        <div className="block lg:hidden p-2 bg-white drop-shadow-md">
           <form
             onSubmit={(e) => e.preventDefault()}
             className="flex animate-fadeIn bg-[#f8fafb] md:hidden w-full border border-primaryblack rounded-3xl py-5 flex-1 h-10 items-center"

@@ -25,6 +25,8 @@ import {
 } from "../../utils/interface";
 import { getDiscountPercent } from "../../utils/functions";
 import { SpinnerloaderComponent } from "../shared";
+import { useDispatch } from "react-redux";
+import { addCourseToCartStore } from "../../redux/reducers/cart.reducer";
 
 const Coursepreview = ({
   oldPrice,
@@ -32,6 +34,7 @@ const Coursepreview = ({
   imageurl,
   courseSlug,
   isGiftedCourse,
+  courseDetails,
 }: CoursepreviewProps): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
@@ -40,6 +43,8 @@ const Coursepreview = ({
   const [isSubmittingCart, setIsSubmittingCart] = useState<boolean>(false);
   const [isPreviewFixed, setIsPreviewFixed] = useState<boolean>(false);
   const [isCollidedFooter, setIsCollidedFooter] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -122,6 +127,7 @@ const Coursepreview = ({
       if (_res) {
         setIsSubmittingCart(false);
         successHandler("Added to cart successfully! 🎉");
+        dispatch(addCourseToCartStore(courseDetails!));
         courseExistsInCart(_data?._id!);
         return true;
       }

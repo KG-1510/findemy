@@ -7,13 +7,15 @@ import { getUserCart } from "../../utils/api";
 import { useCookies } from "react-cookie";
 import { getDiscountPercent } from "../../utils/functions";
 import { CoursedetailsProps, UserDataProps } from "../../utils/interface";
+import { useAppSelector } from "../../redux/store/store";
 
 const Cartpage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
-  const [cartCardsData, setCartCardsData] = useState<any>([]);
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const [cartOldPrice, setCartOldPrice] = useState<number>(0);
   const [cartNewPrice, setCartNewPrice] = useState<number>(0);
+
+  const { cartData } = useAppSelector((store) => store.cart);
 
   useEffect(() => {
     if (cookie?.authToken) {
@@ -27,7 +29,6 @@ const Cartpage = (): JSX.Element => {
   const fetchCartItems = async (authToken: string, userId: string) => {
     const _res = await getUserCart(authToken, userId);
     if (_res) {
-      setCartCardsData(_res.data.cart);
       setCartOldPrice(_res.data.oldPriceTotal);
       setCartNewPrice(_res.data.newPriceTotal);
       setCartDataLoaded(true);
@@ -42,14 +43,14 @@ const Cartpage = (): JSX.Element => {
         <div className="flex flex-col lg:flex-row">
           <div
             className={`flex flex-col w-full ${
-              cartCardsData?.length === 0 ? "lg:w-full" : "lg:w-9/12"
+              cartData?.length === 0 ? "lg:w-full" : "lg:w-9/12"
             } `}
           >
             <p className="text-base text-gray-500 font-normal mb-8">
-              {cartCardsData?.length} Course
-              {cartCardsData?.length > 1 ? "s" : ""} in Cart
+              {cartData?.length} Course
+              {cartData?.length > 1 ? "s" : ""} in Cart
             </p>
-            {cartCardsData?.length === 0 && cartDataLoaded && (
+            {cartData?.length === 0 && cartDataLoaded && (
               <div className="flex flex-col w-full items-center justify-center">
                 <h1 className="text-4xl">🫤</h1>
                 <p className="text-center">
@@ -64,7 +65,7 @@ const Cartpage = (): JSX.Element => {
             )}
             {cartDataLoaded ? (
               <>
-                {cartCardsData?.map((data: CoursedetailsProps) => {
+                {cartData?.map((data: CoursedetailsProps) => {
                   return (
                     <div key={data?._id} className="px-2 animate-fadeIn">
                       <CartcardComponent
@@ -102,7 +103,7 @@ const Cartpage = (): JSX.Element => {
               </>
             )}
           </div>
-          {cartCardsData?.length === 0 ? (
+          {cartData?.length === 0 ? (
             <></>
           ) : (
             <div className="flex flex-col w-full lg:w-3/12 p-4">

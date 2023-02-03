@@ -16,6 +16,8 @@ import {
 } from "../../utils/interface";
 import { sanitizedHtmlText } from "../../utils/functions";
 import { SpinnerloaderComponent } from "../shared";
+import { useDispatch } from "react-redux";
+import { addCourseToCartStore } from "../../redux/reducers/cart.reducer";
 
 const Searchcard = ({
   _id,
@@ -31,11 +33,14 @@ const Searchcard = ({
   tag,
   category,
   level,
+  courseData,
 }: SearchcardProps): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
   const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
   const [isSubmittingCart, setIsSubmittingCart] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (cookie?.authToken) {
@@ -86,6 +91,7 @@ const Searchcard = ({
       );
       if (_res) {
         setIsSubmittingCart(false);
+        dispatch(addCourseToCartStore(courseData!));
         successHandler("Added to cart successfully! 🎉");
         courseExistsInCart(_data?._id!);
       }

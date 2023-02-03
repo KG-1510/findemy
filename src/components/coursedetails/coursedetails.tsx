@@ -163,6 +163,7 @@ const Coursedetailspage = (): JSX.Element => {
           imageurl={courseDetailsData?.imageurl!}
           courseSlug={courseDetailsData?.courseSlug!}
           isGiftedCourse={courseDetailsData?.isGiftedCourse}
+          courseDetails={courseDetailsData}
         />
         <div className="bg-primaryblack w-full text-white">
           {courseDetailsData ? (

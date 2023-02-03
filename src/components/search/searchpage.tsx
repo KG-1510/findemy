@@ -214,6 +214,7 @@ const Searchpage = (): JSX.Element => {
                       category={data?.category}
                       tag={data?.tag}
                       level={data?.level}
+                      courseData={data}
                     />
                   </div>
                 );

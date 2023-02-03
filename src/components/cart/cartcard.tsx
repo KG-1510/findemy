@@ -1,7 +1,9 @@
 import { useCookies } from "react-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import MarkdownView from "react-showdown";
 import StarRatings from "react-star-ratings";
+import { removeCourseFromCartStore } from "../../redux/reducers/cart.reducer";
 import { patchUserCart, successHandler } from "../../utils/api";
 import { sanitizedHtmlText, truncateText } from "../../utils/functions";
 import { CartcardProps, UserDataProps } from "../../utils/interface";
@@ -28,19 +30,21 @@ const Cartcard = ({
     sanitizedCourseDescription = sanitizedHtmlText(description);
   }
 
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const removeCartItem = async () => {
     if (cookie?.authToken) {
-      const _data: UserDataProps | null = JSON.parse(localStorage.getItem("userData")!);
+      const _data: UserDataProps | null = JSON.parse(
+        localStorage.getItem("userData")!
+      );
       const _res = await patchUserCart(
         cookie?.authToken,
         _data?._id!,
         courseSlug
       );
       if (_res) {
+        dispatch(removeCourseFromCartStore(courseSlug));
         successHandler("Item removed from cart!");
-        navigate(0);
       }
     }
   };
