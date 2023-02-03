@@ -1,5 +1,4 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { FooterComponent, NavbarComponent } from "../shared";
 import { AiFillLock } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -21,7 +20,7 @@ import {
 } from "../../utils/constants";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { Checkoutordersloader } from ".";
+import { Checkoutnavbar, Checkoutordersloader } from ".";
 import {
   CoursedetailsProps,
   GiftCourseProps,
@@ -273,10 +272,10 @@ const Checkoutpage = (): JSX.Element => {
 
   return (
     <>
-      <NavbarComponent />
-      <div className="p-4 lg:p-12 mx-auto">
-        <div className="flex flex-col items-center justify-center w-full px-0 mx-auto md:flex-row">
-          <div className="flex flex-col w-full lg:w-5/12">
+      <Checkoutnavbar />
+      <div className="p-4 lg:p-0 mx-auto">
+        <div className="flex flex-col justify-center md:flex-row w-full px-0">
+          <div className="flex flex-col w-full lg:w-8/12 lg:pl-56 lg:pr-14 lg:py-10">
             <h2 className="mb-4 font-bold text-4xl text-heading">Checkout</h2>
             <h3 className="mb-4 font-bold text-xl text-heading">
               Billing Address
@@ -365,7 +364,9 @@ const Checkoutpage = (): JSX.Element => {
                             src="card-icon.svg"
                             alt="card-icon"
                           />
-                          Credit / Debit Card
+                          <p className="text-sm lg:text-base">
+                            Credit / Debit Card
+                          </p>
                         </span>
                         <span className="flex flex-row items-center justify-center space-x-1">
                           <img
@@ -702,7 +703,7 @@ const Checkoutpage = (): JSX.Element => {
                             src={item?.imageurl}
                             alt={item?.title}
                           />
-                          <div className="flex flex-col">
+                          <div className="flex flex-col w-full">
                             <h1 className="p-2 text-sm lg:text-base hover:text-findemypurple">
                               {item?.title}
                             </h1>
@@ -733,56 +734,56 @@ const Checkoutpage = (): JSX.Element => {
               </>
             )}
           </div>
-          <div className="flex flex-col w-full ml-0 lg:ml-12 lg:w-4/12 bg-blue-50 h-auto lg:h-screen p-4">
-            <h3 className="mb-4 font-bold text-xl text-heading">Summary</h3>
-            <div className="flex flex-row w-full justify-between my-1">
-              <p className="text-primaryblack font-light text-base">
-                Original Price:
+          <div className="bg-blue-50 w-full lg:w-5/12">
+            <div className="flex flex-col w-full ml-0 lg:ml-12 lg:w-10/12 bg-blue-50 h-auto lg:h-screen px-5 lg:pr-24 py-8 lg:py-24">
+              <h3 className="mb-4 font-bold text-xl text-heading">Summary</h3>
+              <div className="flex flex-row w-full justify-between my-1">
+                <p className="text-primaryblack font-light text-base">
+                  Original Price:
+                </p>
+                <p className="text-primaryblack font-light text-base">
+                  ₹{cartOldPrice}
+                </p>
+              </div>
+              <div className="flex flex-row w-full justify-between border-b-2 pb-4 border-gray-400 my-1">
+                <p className="text-primaryblack font-light text-base">
+                  Discounts:
+                </p>
+                <p className="text-primaryblack font-light text-base">
+                  -₹{cartOldPrice - cartNewPrice}
+                </p>
+              </div>
+              <div className="flex flex-row w-full justify-between my-3">
+                <p className="text-primaryblack font-bold text-2xl">Total:</p>
+                <p className="text-primaryblack font-bold text-2xl">
+                  ₹{cartNewPrice}
+                </p>
+              </div>
+              <p className="text-xs font-light text-center">
+                By completing your purchase you agree to these{" "}
+                <a
+                  href="https://www.udemy.com/terms/"
+                  target={"_blank"}
+                  rel="noreferrer"
+                >
+                  <span className="text-findemypurple">Terms of Service.</span>
+                </a>
               </p>
-              <p className="text-primaryblack font-light text-base">
-                ₹{cartOldPrice}
-              </p>
+              {selectedPaymentMode !== "card" &&
+                selectedPaymentMode !== "upi" && (
+                  <div className="flex w-full justify-end">
+                    <button
+                      onClick={() => handleCheckout()}
+                      className="p-3 bg-findemypurple focus:outline-none rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm"
+                    >
+                      Complete Checkout
+                    </button>
+                  </div>
+                )}
             </div>
-            <div className="flex flex-row w-full justify-between border-b-2 pb-4 border-gray-400 my-1">
-              <p className="text-primaryblack font-light text-base">
-                Discounts:
-              </p>
-              <p className="text-primaryblack font-light text-base">
-                -₹{cartOldPrice - cartNewPrice}
-              </p>
-            </div>
-            <div className="flex flex-row w-full justify-between my-3">
-              <p className="text-primaryblack font-bold text-2xl">Total:</p>
-              <p className="text-primaryblack font-bold text-2xl">
-                ₹{cartNewPrice}
-              </p>
-            </div>
-            <p className="text-xs font-light text-center">
-              By completing your purchase you agree to these{" "}
-              <a
-                href="https://www.udemy.com/terms/"
-                target={"_blank"}
-                rel="noreferrer"
-              >
-                <span className="text-findemypurple">Terms of Service.</span>
-              </a>
-            </p>
-            {selectedPaymentMode !== "card" &&
-              selectedPaymentMode !== "upi" && (
-                <div className="flex w-full justify-end">
-                  <button
-                    onClick={() => handleCheckout()}
-                    className="p-3 bg-findemypurple focus:outline-none rounded-sm hover:opacity-90 w-full mx-auto my-3 text-white font-semibold text-sm"
-                  >
-                    Complete Checkout
-                  </button>
-                </div>
-              )}
           </div>
         </div>
       </div>
-
-      <FooterComponent />
     </>
   );
 };

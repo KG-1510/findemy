@@ -24,6 +24,7 @@ import {
   UserDataProps,
 } from "../../utils/interface";
 import { getDiscountPercent } from "../../utils/functions";
+import { SpinnerloaderComponent } from "../shared";
 
 const Coursepreview = ({
   oldPrice,
@@ -36,6 +37,7 @@ const Coursepreview = ({
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
   const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isSubmittingCart, setIsSubmittingCart] = useState<boolean>(false);
   const [isPreviewFixed, setIsPreviewFixed] = useState<boolean>(false);
   const [isCollidedFooter, setIsCollidedFooter] = useState<boolean>(false);
 
@@ -107,6 +109,7 @@ const Coursepreview = ({
   };
 
   const addCourseToCart = async () => {
+    setIsSubmittingCart(true);
     if (cookie?.authToken) {
       const _data: UserDataProps | null = JSON.parse(
         localStorage.getItem("userData")!
@@ -117,11 +120,13 @@ const Coursepreview = ({
         courseSlug
       );
       if (_res) {
+        setIsSubmittingCart(false);
         successHandler("Added to cart successfully! 🎉");
         courseExistsInCart(_data?._id!);
         return true;
       }
     } else {
+      setIsSubmittingCart(false);
       successHandler("Hold on, login to continue!");
       navigate("/login");
     }
@@ -215,7 +220,13 @@ const Coursepreview = ({
                       ✓ Added to cart!
                     </span>
                   ) : (
-                    <>Add to cart</>
+                    <>
+                      {isSubmittingCart ? (
+                        <SpinnerloaderComponent />
+                      ) : (
+                        <>Add to cart</>
+                      )}
+                    </>
                   )}
                 </button>
 
@@ -340,7 +351,13 @@ const Coursepreview = ({
                     ✓ Added to cart!
                   </span>
                 ) : (
-                  <>Add to cart</>
+                  <>
+                    {isSubmittingCart ? (
+                      <SpinnerloaderComponent />
+                    ) : (
+                      <>Add to cart</>
+                    )}
+                  </>
                 )}
               </button>
             </>

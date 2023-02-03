@@ -15,6 +15,7 @@ import {
   UserDataProps,
 } from "../../utils/interface";
 import { sanitizedHtmlText } from "../../utils/functions";
+import { SpinnerloaderComponent } from "../shared";
 
 const Searchcard = ({
   _id,
@@ -34,6 +35,7 @@ const Searchcard = ({
   const [cookie, _] = useCookies(["authToken"]);
   const [cartCourseExists, setCartCourseExists] = useState<boolean>(false);
   const [coursePurchased, setCoursePurchased] = useState<boolean>(false);
+  const [isSubmittingCart, setIsSubmittingCart] = useState<boolean>(false);
 
   useEffect(() => {
     if (cookie?.authToken) {
@@ -72,6 +74,7 @@ const Searchcard = ({
   };
 
   const addCourseToCart = async () => {
+    setIsSubmittingCart(true);
     if (cookie?.authToken) {
       const _data: UserDataProps | null = JSON.parse(
         localStorage.getItem("userData")!
@@ -82,9 +85,11 @@ const Searchcard = ({
         courseSlug
       );
       if (_res) {
+        setIsSubmittingCart(false);
         successHandler("Added to cart successfully! 🎉");
         courseExistsInCart(_data?._id!);
       }
+      setIsSubmittingCart(false);
     }
   };
 
@@ -188,7 +193,13 @@ const Searchcard = ({
                         ✓ Added to cart!
                       </span>
                     ) : (
-                      <>Add to cart</>
+                      <>
+                        {isSubmittingCart ? (
+                          <SpinnerloaderComponent />
+                        ) : (
+                          <>Add to cart</>
+                        )}
+                      </>
                     )}
                   </button>
                 </div>

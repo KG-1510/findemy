@@ -375,56 +375,61 @@ const Navbar = (): JSX.Element => {
               </button>
               {showNavbarDrawer && (
                 <>
-                  <div className="absolute animate-fadeIn w-60 flex flex-col bg-white z-50 drop-shadow-md top-16">
-                    <div className="flex flex-row p-2 w-full border-b">
-                      <img
-                        src={
-                          userData?.imageurl
-                            ? userData?.imageurl
-                            : "https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
-                        }
-                        alt="profile"
-                        className="h-12 w-12 rounded-full"
-                      />
-                      <div className="flex flex-col w-full text-left ml-1">
-                        <p className="text-lg font-bold">
-                          {userData?.fullName}
-                        </p>
-                        <p className="text-xs navbar-drawer-email font-light">
-                          {userData?.email}
+                  <div
+                    onClick={() => setShowNavbarDrawer(false)}
+                    className="fixed w-screen h-screen bg-transparent"
+                  >
+                    <div className="absolute right-0 top-14 animate-fadeIn w-60 flex flex-col bg-white z-50 drop-shadow-md">
+                      <div className="flex flex-row p-2 w-full border-b">
+                        <img
+                          src={
+                            userData?.imageurl
+                              ? userData?.imageurl
+                              : "https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+                          }
+                          alt="profile"
+                          className="h-12 w-12 rounded-full"
+                        />
+                        <div className="flex flex-col w-full text-left ml-1">
+                          <p className="text-lg font-bold">
+                            {userData?.fullName}
+                          </p>
+                          <p className="text-xs navbar-drawer-email font-light">
+                            {userData?.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col space-y-4 text-left px-4 py-2">
+                        <Link to={"/mylearnings"}>
+                          <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
+                            My learnings
+                          </p>
+                        </Link>
+                        <Link to={"/myteachings"}>
+                          <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
+                            My teachings
+                          </p>
+                        </Link>
+                        <Link to={"/cart"}>
+                          <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
+                            My cart
+                          </p>
+                        </Link>
+                        <a
+                          className="text-sm font-light hover:text-findemypurple cursor-pointer"
+                          href="https://about.udemy.com/company/?locale=en-us#offices"
+                          target={"_blank"}
+                          rel="noreferrer"
+                        >
+                          Help
+                        </a>
+                        <p
+                          onClick={() => handleLogout()}
+                          className="text-sm font-light hover:text-findemypurple cursor-pointer"
+                        >
+                          Logout
                         </p>
                       </div>
-                    </div>
-                    <div className="flex flex-col space-y-4 text-left px-4 py-2">
-                      <Link to={"/mylearnings"}>
-                        <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
-                          My learnings
-                        </p>
-                      </Link>
-                      <Link to={"/myteachings"}>
-                        <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
-                          My teachings
-                        </p>
-                      </Link>
-                      <Link to={"/cart"}>
-                        <p className="text-sm font-light hover:text-findemypurple cursor-pointer">
-                          My cart
-                        </p>
-                      </Link>
-                      <a
-                        className="text-sm font-light hover:text-findemypurple cursor-pointer"
-                        href="https://about.udemy.com/company/?locale=en-us#offices"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        Help
-                      </a>
-                      <p
-                        onClick={() => handleLogout()}
-                        className="text-sm font-light hover:text-findemypurple cursor-pointer"
-                      >
-                        Logout
-                      </p>
                     </div>
                   </div>
                 </>
