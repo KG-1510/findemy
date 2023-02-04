@@ -12,10 +12,15 @@ import { useAppSelector } from "../../redux/store/store";
 const Cartpage = (): JSX.Element => {
   const [cookie, _] = useCookies(["authToken"]);
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
-  const [cartOldPrice, setCartOldPrice] = useState<number>(0);
-  const [cartNewPrice, setCartNewPrice] = useState<number>(0);
+  let oldPriceTotal = 0;
+  let newPriceTotal = 0;
 
   const { cartData } = useAppSelector((store) => store.cart);
+
+  cartData.map((item) => {
+    oldPriceTotal = oldPriceTotal + item.oldPrice;
+    newPriceTotal = newPriceTotal + item.price;
+  });
 
   useEffect(() => {
     if (cookie?.authToken) {
@@ -26,11 +31,16 @@ const Cartpage = (): JSX.Element => {
     }
   }, []);
 
+  useEffect(() => {
+    cartData.map((item) => {
+      oldPriceTotal = oldPriceTotal + item.oldPrice;
+      newPriceTotal = newPriceTotal + item.price;
+    });
+  }, [cartData]);
+
   const fetchCartItems = async (authToken: string, userId: string) => {
     const _res = await getUserCart(authToken, userId);
     if (_res) {
-      setCartOldPrice(_res.data.oldPriceTotal);
-      setCartNewPrice(_res.data.newPriceTotal);
       setCartDataLoaded(true);
     }
   };
@@ -108,12 +118,12 @@ const Cartpage = (): JSX.Element => {
           ) : (
             <div className="flex flex-col w-full lg:w-3/12 p-4">
               <p className="text-gray-500 font-normal text-lg">Total:</p>
-              <h1 className="font-bold text-3xl my-2">₹{cartNewPrice}</h1>
+              <h1 className="font-bold text-3xl my-2">₹{newPriceTotal}</h1>
               <p className="text-gray-500 font-normal text-sm line-through">
-                ₹{cartOldPrice}
+                ₹{oldPriceTotal}
               </p>
               <p className="text-gray-500 font-normal text-sm">
-                {getDiscountPercent(cartOldPrice, cartNewPrice)}% off
+                {getDiscountPercent(oldPriceTotal, newPriceTotal)}% off
               </p>
               <Link to={"/checkout"}>
                 <button className="p-3 bg-findemypurple hover:opacity-90 w-full my-3 text-white font-semibold text-sm">
